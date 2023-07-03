@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:text ="Register New Account"
+            android:text ="@string/register_new_account"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:textSize="20sp"
@@ -31,10 +31,15 @@
             android:layout_height="match_parent"
             android:id="@+id/passwordR"
             android:hint="@string/password" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/passwordConfirm"
+            android:hint="@string/confirm_password" />
     </LinearLayout>
     <Button
         android:id="@+id/registerBtn"
-        android:text="@string/login"
+        android:text="@string/register"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

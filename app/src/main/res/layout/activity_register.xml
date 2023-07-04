@@ -24,17 +24,20 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/emailR"
+            android:height="48dp"
             android:hint="@string/email" />
 
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/passwordR"
+            android:height="48dp"
             android:hint="@string/password" />
         <EditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/passwordConfirm"
+            android:height="48dp"
             android:hint="@string/confirm_password" />
     </LinearLayout>
     <Button

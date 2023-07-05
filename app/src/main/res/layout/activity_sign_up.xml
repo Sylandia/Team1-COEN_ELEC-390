@@ -21,7 +21,7 @@
         android:id="@+id/usernameView"
         android:layout_width="216dp"
         android:layout_height="21dp"
-        android:text="Please enter your username"
+        android:text="Please enter your email"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.492"
@@ -55,7 +55,7 @@
         app:layout_constraintVertical_bias="0.63" />
 
     <EditText
-        android:id="@+id/usernameText"
+        android:id="@+id/usernameTextS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -68,7 +68,7 @@
         app:layout_constraintVertical_bias="0.421" />
 
     <EditText
-        android:id="@+id/passwordText"
+        android:id="@+id/passwordTextS"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -104,4 +104,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.841" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

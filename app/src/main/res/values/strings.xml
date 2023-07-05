@@ -49,4 +49,6 @@
     <string name="register">Register</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="register_new_account">Register New Account</string>
+    <string name="spotter">Spotter</string>
+    <string name="login_page">Login Page</string>
 </resources>

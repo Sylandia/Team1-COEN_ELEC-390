@@ -8,13 +8,13 @@ import android.widget.EditText;
 
 import com.example.spotter.R;
 
-public class MainActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity {
+    private EditText usernameText, passwordText, confirmPasswordText;
+    private Button confirmButton;
 
-    private EditText usernameText, passwordText;
-    private Button logInButton, signInButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_sign_up);
     }
 }

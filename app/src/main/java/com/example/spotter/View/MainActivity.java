@@ -129,8 +129,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else{
 
-            Toast.makeText(MainActivity.this,"Logged in.",Toast.LENGTH_SHORT).show();
-            Log.d(Lobster, "Account: " + email + " login.");
+          //  Toast.makeText(MainActivity.this,"Logged in.",Toast.LENGTH_SHORT).show();
+           // Log.d(Lobster, "Account: " + email + " login.");
             return true;
         }
     }

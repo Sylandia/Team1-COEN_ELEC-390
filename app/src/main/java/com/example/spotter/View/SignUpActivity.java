@@ -1,6 +1,5 @@
 package com.example.spotter.View;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,12 +13,7 @@ import android.widget.Toast;
 
 import com.example.spotter.Controller.FirebaseHelper;
 import com.example.spotter.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-
 
 
 public class SignUpActivity extends AppCompatActivity {
@@ -32,7 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_up);
+        setContentView(R.layout.activity_sign_in);
 
         usernameText = findViewById(R.id.usernameTextS);
         passwordText = findViewById(R.id.passwordTextS);

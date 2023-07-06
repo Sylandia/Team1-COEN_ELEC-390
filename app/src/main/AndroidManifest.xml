@@ -17,7 +17,7 @@
             android:name=".View.HomeActivity"
             android:parentActivityName=".View.MainActivity" />
         <activity
-            android:name=".View.SignInActivity"
+            android:name=".View.SignUpActivity"
             android:parentActivityName=".View.MainActivity" />
         <activity
             android:name=".View.LoginActivity"

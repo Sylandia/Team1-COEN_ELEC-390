@@ -13,8 +13,11 @@
         android:theme="@style/Theme.Spotter"
         tools:targetApi="31">
         <activity
-            android:name=".View.SignUpActivity"
-            android:exported="false" />
+            android:name=".View.HomeActivity"
+            android:parentActivityName=".View.MainActivity" />
+        <activity
+            android:name=".View.SignInActivity"
+            android:parentActivityName=".View.MainActivity" />
         <activity
             android:name=".View.MainActivity"
             android:exported="true">

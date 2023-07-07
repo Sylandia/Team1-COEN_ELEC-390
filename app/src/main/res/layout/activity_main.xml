@@ -76,10 +76,22 @@
             android:text="Login" />
     </LinearLayout>
 
-    <Button
-        android:id="@+id/signUpButton"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sign Up" />
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No account?">
+        </TextView>
+        <Button
+            android:id="@+id/signUpButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sign Up" />
+    </LinearLayout>
 
 </LinearLayout>

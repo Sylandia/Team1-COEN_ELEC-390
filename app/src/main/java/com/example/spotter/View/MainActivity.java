@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         Log.d(Lobster, "signInWithEmail:success");
-                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        //FirebaseUser user = mAuth.getCurrentUser();
                                        goToLogin();
                                        finish();
 

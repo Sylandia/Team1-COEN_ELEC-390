@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getSupportActionBar().hide();
+
         usernameText = findViewById(R.id.usernameTextM);
         passwordText = findViewById(R.id.passwordTextM);
         logInButton = findViewById(R.id.logInButton);

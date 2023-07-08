@@ -24,11 +24,12 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="169dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="20dp">
 
         <TextView
             android:id="@+id/logInText"

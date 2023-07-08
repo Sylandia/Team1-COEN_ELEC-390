@@ -1,5 +1,6 @@
 package com.example.spotter.View;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -14,6 +15,9 @@ import android.widget.Toast;
 
 import com.example.spotter.Controller.FirebaseHelper;
 import com.example.spotter.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 
@@ -48,29 +52,29 @@ public class SignUpActivity extends AppCompatActivity {
                     email = String.valueOf(usernameText.getText());
                     password = String.valueOf(passwordText.getText());
 
-                    if(fb.signUp(email, password)){
-                        goToLogin();
-                        finish();
-                    }
+//                    if(fb.signUp(email, password)){
+//                        goToLogin();
+//                        finish();
+//                    }
 
-//                    mAuth.createUserWithEmailAndPassword(email, password) // from Firebase documentation for creating user https://firebase.google.com/docs/auth/android/start#java
-//                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-//                                @Override
-//                                public void onComplete(@NonNull Task<AuthResult> task) {
-//                                    if (task.isSuccessful()) {
-//                                        Log.d(Lobster, "createUserWithEmail:success");
-//                                        //TODO go to the next activity after success through intent.
-//                                        goToLogin();
-//                                        finish();
-//                                    }
-//                                    else {
-//
-//                                        Log.w(Lobster, "createUserWithEmail:failure", task.getException());
-//                                        Toast.makeText(SignUpActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
-//
-//                                    }
-//                                }
-//                            });
+                    mAuth.createUserWithEmailAndPassword(email, password) // from Firebase documentation for creating user https://firebase.google.com/docs/auth/android/start#java
+                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        Log.d(Lobster, "createUserWithEmail:success");
+                                        //TODO go to the next activity after success through intent.
+                                        goToLogin();
+                                        finish();
+                                    }
+                                    else {
+
+                                        Log.w(Lobster, "createUserWithEmail:failure", task.getException());
+                                        Toast.makeText(SignUpActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                }
+                            });
                 }
             }
         });

@@ -95,6 +95,7 @@
             android:text="Sign Up" />
 
         <Button
+            android:id="@+id/bypass_test_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Bypass Login for testing">

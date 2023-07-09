@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
     }
     private void goToLogin(){
 
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         startActivity(intent);
     }
 }

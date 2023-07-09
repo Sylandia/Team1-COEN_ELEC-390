@@ -56,16 +56,21 @@ public class HomeActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            // Home button clicked
-            FirebaseAuth.getInstance().signOut(); //added to sign out
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        if (item.getItemId() == android.R.id.home) {
+//            // Home button clicked
+//            FirebaseAuth.getInstance().signOut(); //added to sign out
+//            Intent intent = new Intent(this, MainActivity.class);
+//            startActivity(intent);
+//            return true;
+//        }
+//        return super.onOptionsItemSelected(item);
+//    }
+
+    private void LogOut() {
+        Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -73,18 +78,29 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        getSupportActionBar().setTitle("Home");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle("Home");
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         squatsButton = findViewById(R.id.squatsButton);
         deadliftsButton = findViewById(R.id.deadliftsButton);
         curlsButton = findViewById(R.id.curlsButton);
         lateralButton = findViewById(R.id.lateralButton);
+        logOut = findViewById(R.id.logOutbutton);
 
         squatsButton.setOnClickListener(squatsActivity);
         deadliftsButton.setOnClickListener(deadliftsActivity);
         curlsButton.setOnClickListener(curlsActivity);
         lateralButton.setOnClickListener(lateralActivity);
+
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(Lobster, "Logged out.");
+                FirebaseAuth.getInstance().signOut();
+                LogOut();
+                finish();
+            }
+        });
 
     }
 

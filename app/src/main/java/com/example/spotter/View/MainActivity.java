@@ -25,9 +25,6 @@ public class MainActivity extends AppCompatActivity {
     static final String Lobster = "Lobster_LogIn"; // for Log
     public EditText usernameText, passwordText;
     public Button logInButton, signUpButton;
-    //******REMOVE BYPASS WHEN LOGIN WORKS*******
-    public Button bypass;
-    //******REMOVE BYPASS WHEN LOGIN WORKS*******
     private FirebaseAuth mAuth; // connect to firebase
     //private FirebaseHelper fb;
 
@@ -47,9 +44,6 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance(); // Initialize Firebase
         //fb = new FirebaseHelper(MainActivity.this);
 
-        //******REMOVE BYPASS WHEN LOGIN WORKS*******
-        bypass = findViewById(R.id.bypass_test_btn);
-        //******REMOVE BYPASS WHEN LOGIN WORKS*******
 
         logInButton.setOnClickListener(new View.OnClickListener() { // login button
             @Override
@@ -93,15 +87,6 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        //******REMOVE BYPASS WHEN LOGIN WORKS*******
-        bypass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        //******REMOVE BYPASS WHEN LOGIN WORKS*******
 
     }
     @Override

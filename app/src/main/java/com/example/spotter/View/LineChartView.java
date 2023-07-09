@@ -43,7 +43,10 @@ public class LineChartView extends AppCompatActivity {
         description.setTextColor(Color.WHITE);
         description.setTextSize(14f);
         lineChart.setDescription(description);
+        lineChart.setPinchZoom(true);
+        lineChart.setTouchEnabled(true);
         lineChart.getAxisRight().setDrawLabels(false);
+        lineChart.getAxisRight().setEnabled(false);
 
         xValues = Arrays.asList("1", "2", "3", "4", "5", "6", "7");
 

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import com.example.spotter.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -33,7 +34,9 @@ public class LineChartView extends AppCompatActivity {
 
         Description description = new Description();
         description.setText("IMU Readings");
-        description.setPosition(150f, 15f);
+        description.setPosition(350f, 15f);
+        description.setTextColor(Color.WHITE);
+        description.setTextSize(14f);
         lineChart.setDescription(description);
         lineChart.getAxisRight().setDrawLabels(false);
 
@@ -44,6 +47,7 @@ public class LineChartView extends AppCompatActivity {
         xAxis.setValueFormatter(new IndexAxisValueFormatter(xValues));
         xAxis.setLabelCount(xValues.size());
         xAxis.setGranularity(1f);
+        xAxis.setTextColor(Color.WHITE);
 
 
         YAxis yAxis = lineChart.getAxisLeft();
@@ -52,6 +56,10 @@ public class LineChartView extends AppCompatActivity {
         yAxis.setAxisLineWidth(2f);
         yAxis.setAxisLineColor(Color.BLACK);
         yAxis.setLabelCount(10);
+        yAxis.setTextColor(Color.WHITE);
+
+        Legend legend = lineChart.getLegend();
+        legend.setTextColor(Color.WHITE);
 
         List <Entry> entries1 = new ArrayList<>();
         entries1.add(new Entry(0, 10f));
@@ -61,7 +69,6 @@ public class LineChartView extends AppCompatActivity {
         entries1.add(new Entry(4, 69f));
         entries1.add(new Entry(5, 42f));
         entries1.add(new Entry(6, 30f));
-        entries1.add(new Entry(7, 10f));
 
         List <Entry> entries2 = new ArrayList<>();
         entries2.add(new Entry(0, 33f));
@@ -71,17 +78,19 @@ public class LineChartView extends AppCompatActivity {
         entries2.add(new Entry(4, 65f));
         entries2.add(new Entry(5, 83f));
         entries2.add(new Entry(6, 24f));
-        entries2.add(new Entry(7, 6f));
 
         LineDataSet lineDataSet1 = new LineDataSet(entries1, "IMU1");
         lineDataSet1.setColor(Color.BLUE);
+        lineDataSet1.setDrawValues(false);
 
         LineDataSet lineDataSet2 = new LineDataSet(entries2, "IMU2");
         lineDataSet2.setColor(Color.RED);
+        lineDataSet2.setDrawValues(false);
 
         LineData lineData = new LineData(lineDataSet1, lineDataSet2);
 
         lineChart.setData(lineData);
+        lineData.setValueTextColor(Color.WHITE);
 
         lineChart.invalidate();
     }

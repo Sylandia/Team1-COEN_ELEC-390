@@ -35,6 +35,12 @@
 <!--            android:hint="@string/password" />-->
 <!--    </LinearLayout>-->
     <Button
+        android:id="@+id/btn_charts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Charts"></Button>
+
+    <Button
         android:id="@+id/signOutButton"
         android:text="Signout"
         android:gravity="center"

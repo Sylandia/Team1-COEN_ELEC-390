@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,25 +20,17 @@ public class SquatActivity extends AppCompatActivity {
     static final String Lobster = "Lobster_Log";
 
     private EditText rightReadingText, leftReadingText, backReadingText;
-    private Button returnButton, chartButton;
+    private Button chartButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_squats);
-        returnButton = findViewById(R.id.returnButton);
         chartButton = findViewById(R.id.chartButton);
 
-        returnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(Lobster, "Logged out.");
-                FirebaseAuth.getInstance().signOut();
-                goToHome();
-                finish();
-            }
-        });
+        getSupportActionBar().setTitle("Squats");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         chartButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,11 +42,18 @@ public class SquatActivity extends AppCompatActivity {
         });
     }
 
-    private void goToHome(){
-
-        Intent intent = new Intent(SquatActivity.this, HomeActivity.class);
-        startActivity(intent);
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // Home button clicked
+            FirebaseAuth.getInstance().signOut(); //added to sign out
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
+
+
 
 }

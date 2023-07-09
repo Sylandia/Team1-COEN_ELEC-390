@@ -78,8 +78,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-//        getSupportActionBar().setTitle("Home");
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("Home");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         squatsButton = findViewById(R.id.squatsButton);
         deadliftsButton = findViewById(R.id.deadliftsButton);

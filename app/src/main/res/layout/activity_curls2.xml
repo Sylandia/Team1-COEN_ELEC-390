@@ -97,18 +97,6 @@
         app:layout_constraintVertical_bias="0.322" />
 
     <Button
-        android:id="@+id/returnButton"
-        android:layout_width="176dp"
-        android:layout_height="55dp"
-        android:text="Return"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.068"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.936" />
-
-    <Button
         android:id="@+id/chartButton"
         android:layout_width="176dp"
         android:layout_height="55dp"

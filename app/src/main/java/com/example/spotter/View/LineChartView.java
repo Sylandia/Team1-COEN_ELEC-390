@@ -2,8 +2,10 @@ package com.example.spotter.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import com.example.spotter.R;
 import com.github.mikephil.charting.charts.LineChart;
@@ -29,6 +31,9 @@ public class LineChartView extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_chart);
+
+        getSupportActionBar().setTitle("IMU Chart");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         lineChart = findViewById(R.id.LineChart_view);
 
@@ -93,5 +98,16 @@ public class LineChartView extends AppCompatActivity {
         lineData.setValueTextColor(Color.WHITE);
 
         lineChart.invalidate();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // Home button clicked
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

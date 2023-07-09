@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -26,6 +27,9 @@ public class LoginActivity extends AppCompatActivity {
         charts=findViewById(R.id.btn_charts);
         mAuth = FirebaseAuth.getInstance();
         user = mAuth.getCurrentUser();
+
+        getSupportActionBar().setTitle("Login");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if(user == null){
             goToLogin();
@@ -57,5 +61,17 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            // Home button clicked
+            FirebaseAuth.getInstance().signOut(); //added to sign out
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

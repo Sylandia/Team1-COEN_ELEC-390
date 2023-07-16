@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public EditText usernameText, passwordText;
     public Button logInButton, signUpButton;
     private FirebaseAuth mAuth; // connect to firebase
-    //private FirebaseHelper fb;
+   // private FirebaseHelper fb;
 
 
     @Override
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
         signUpButton = findViewById(R.id.signUpButton);
         mAuth = FirebaseAuth.getInstance(); // Initialize Firebase
         //fb = new FirebaseHelper(MainActivity.this);
+        //fb.initFirebase();
 
 
         logInButton.setOnClickListener(new View.OnClickListener() { // login button
@@ -53,11 +54,17 @@ public class MainActivity extends AppCompatActivity {
                     String email, password;
                     email = String.valueOf(usernameText.getText());
                     password = String.valueOf(passwordText.getText());
-//
+
+
 //                    if(fb.signIn(email, password)){
-//                        //TODO go to the next activity after success through intent.
+//                        Log.d(Lobster, "Account: " + email + " login.");
 //                        goToLogin();
 //                        finish();
+//                    }
+//                    else{
+//
+//                        Log.d(Lobster, "Failed to sign in: " + email);
+//                        Toast.makeText(MainActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
 //                    }
 
                     mAuth.signInWithEmailAndPassword(email, password)
@@ -93,14 +100,13 @@ public class MainActivity extends AppCompatActivity {
     public void onStart(){ // make sure no one is logged in.
         super.onStart();
 //        if(fb.signInCheck()){
-//            //TODO intent of where to go.
+//            Log.d(Lobster, "Already Logged in.");
 //            goToLogin();
 //            finish();
-//
 //        }
+//
         FirebaseUser currentUser = mAuth.getCurrentUser(); // check for sign in
         if(currentUser != null){
-            //TODO intent of where to go.
              goToLogin();
              finish();
         }
@@ -140,12 +146,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void goToSignUp(){
-
+        Log.d(Lobster, "Going to Sign up");
         Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
         startActivity(intent);
     }
     private void goToLogin(){
-
+        Log.d(Lobster, "Going to Login");
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         startActivity(intent);
     }

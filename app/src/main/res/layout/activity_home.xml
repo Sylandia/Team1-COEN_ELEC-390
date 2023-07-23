@@ -33,48 +33,27 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.224" />
 
-    <Button
-        android:id="@+id/squatsButton"
-        android:layout_width="179dp"
-        android:layout_height="63dp"
-        android:text="Squats"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.357" />
+    <!--    <Button-->
+<!--        android:id="@+id/curlsButton"-->
+<!--        android:layout_width="179dp"-->
+<!--        android:layout_height="63dp"-->
+<!--        android:text="Bicep Curls"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.648" />-->
 
-    <Button
-        android:id="@+id/deadliftsButton"
-        android:layout_width="179dp"
-        android:layout_height="63dp"
-        android:text="Deadlifts"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <Button
-        android:id="@+id/curlsButton"
-        android:layout_width="179dp"
-        android:layout_height="63dp"
-        android:text="Bicep Curls"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.648" />
-
-    <Button
-        android:id="@+id/lateralButton"
-        android:layout_width="179dp"
-        android:layout_height="63dp"
-        android:text="Lateral Raises"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.785" />
+<!--    <Button-->
+<!--        android:id="@+id/lateralButton"-->
+<!--        android:layout_width="179dp"-->
+<!--        android:layout_height="63dp"-->
+<!--        android:text="Lateral Raises"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.785" />-->
 
 <!--    <androidx.appcompat.widget.Toolbar-->
 <!--        android:id="@+id/toolBar"-->
@@ -90,15 +69,25 @@
 <!--        app:titleTextColor="@color/white" />-->
 
     <Button
-        android:id="@+id/logOutbutton"
-        android:layout_width="140dp"
-        android:layout_height="48dp"
-        android:text="Log Out"
+        android:id="@+id/squatsButton"
+        android:layout_width="179dp"
+        android:layout_height="63dp"
+        android:text="Squats"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.059"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.461" />
+
+    <Button
+        android:id="@+id/deadliftsButton"
+        android:layout_width="179dp"
+        android:layout_height="63dp"
+        android:text="Deadlifts"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.696" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

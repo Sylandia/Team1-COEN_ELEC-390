@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 
 import android.util.Log;
@@ -20,14 +21,28 @@ public class SquatActivity extends AppCompatActivity {
     static final String Lobster = "Lobster_Log";
 
     private EditText rightReadingText, leftReadingText, backReadingText;
-    private Button chartButton;
+    private Button chartButton, helpButton;
+
+    private View.OnClickListener helpActivity = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(Lobster, "Go to Help");
+            FragmentManager fm = getSupportFragmentManager();
+            HelpFragmentSquats hp = new HelpFragmentSquats();
+            hp.show(fm, "fragment_help_squat");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_squats);
+
         chartButton = findViewById(R.id.chartButton);
+        helpButton = findViewById(R.id.helpButton);
+
+        helpButton.setOnClickListener(helpActivity);
 
         getSupportActionBar().setTitle("Squats");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -53,7 +68,5 @@ public class SquatActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
 }

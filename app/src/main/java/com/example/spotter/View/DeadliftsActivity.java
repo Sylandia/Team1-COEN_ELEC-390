@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 
 import android.util.Log;
@@ -29,10 +30,19 @@ public class DeadliftsActivity extends AppCompatActivity {
 
     static final String Lobster = "Lobster_Deadlift";
 
-    private TextView rightReadingText, leftReadingText, backReadingText;
+    private TextView rightReadingText, leftReadingText, backReadingText, helpButton;
     private Button chartButton;
     DatabaseReference refDatabase, sensor;
 
+    private View.OnClickListener helpActivity = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(Lobster, "Go to Help");
+            FragmentManager fm = getSupportFragmentManager();
+            HelpFragmentSquats hp = new HelpFragmentSquats();
+            hp.show(fm, "fragment_help_squat");
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +54,11 @@ public class DeadliftsActivity extends AppCompatActivity {
         leftReadingText = findViewById(R.id.Gyro2);
         backReadingText = findViewById(R.id.Flex);
 
+        helpButton = findViewById(R.id.helpButton);
+
         refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
 
-
+        helpButton.setOnClickListener(helpActivity);
 
         getSupportActionBar().setTitle("Squats");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

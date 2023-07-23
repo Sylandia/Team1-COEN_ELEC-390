@@ -64,7 +64,7 @@
             android:textSize="20dp" />
 
         <TextView
-            android:id="@+id/deadlift_a1x"
+            android:id="@+id/squat_a1x"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -73,7 +73,7 @@
             android:textSize="25dp" />
 
         <TextView
-            android:id="@+id/deadlift_a2x"
+            android:id="@+id/squat_a2x"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -98,7 +98,7 @@
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/deadlift_a1y"
+            android:id="@+id/squat_a1y"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -107,7 +107,7 @@
             android:textSize="25dp" />
 
         <TextView
-            android:id="@+id/deadlift_a2y"
+            android:id="@+id/squat_a2y"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -130,7 +130,7 @@
 
 
     <TextView
-        android:id="@+id/deadlift_flex"
+        android:id="@+id/squat_flex"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"

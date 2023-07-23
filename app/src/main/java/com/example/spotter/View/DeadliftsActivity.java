@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,13 +22,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Map;
-import java.util.Objects;
 
 public class DeadliftsActivity extends AppCompatActivity {
 
     static final String Lobster = "Lobster_Deadlift";
 
-    private TextView rightReadingText, leftReadingText, backReadingText, angleText;
+    private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text;
     private Button chartButton;
     DatabaseReference refDatabase, sensor;
 
@@ -39,11 +37,15 @@ public class DeadliftsActivity extends AppCompatActivity {
         // Inflate the layout for this fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deadlifts);
+
+        angle1x_text = findViewById(R.id.deadlift_a1x);
+        angle1y_text = findViewById(R.id.deadlift_a1y);
+        angle2x_text = findViewById(R.id.deadlift_a2x);
+        angle2y_text = findViewById(R.id.deadlift_a2y);
+        flex_text = findViewById(R.id.deadlift_flex);
+
         chartButton = findViewById(R.id.chartButton);
-        rightReadingText = findViewById(R.id.Gyro1);
-        leftReadingText = findViewById(R.id.Gyro2);
-        backReadingText = findViewById(R.id.Flex);
-        angleText =findViewById(R.id.Angle);
+
 
         refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
 
@@ -64,19 +66,21 @@ public class DeadliftsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                Double gyro1 , gyro2, flex, angle;
+                Double angle1x , angle1y, angle2x, angle2y, flex;
 
                 Map<String, Double> value = (Map<String, Double>) snapshot.getValue(true);
-                gyro1 = value.get("Angle1x");
-                gyro2 = value.get("Angle1y");
-                flex = value.get("Angle2x");
-                angle = value.get("Angle2y");
+                angle1x = value.get("Angle1x");
+                angle1y = value.get("Angle1y");
+                angle2x = value.get("Angle2x");
+                angle2y = value.get("Angle2y");
+                flex = value.get("Flex");
 
 
-                rightReadingText.setText(gyro1.toString());
-                leftReadingText.setText(gyro2.toString());
-                backReadingText.setText(flex.toString());
-                angleText.setText(angle.toString());
+                angle1x_text.setText(angle1x.toString());
+                angle1y_text.setText(angle1y.toString());
+                angle2x_text.setText(angle2x.toString());
+                angle2y_text.setText(angle2y.toString());
+                flex_text.setText(flex.toString());
 
                 Log.d(Lobster, "Value is: " + value);
             }

@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:textSize="32dp"
         android:gravity="center"
-        android:text="Live Readings for Squats"/>
+        android:text="Live Readings for Deadlifts"/>
 
 
     <!-- First Row -->

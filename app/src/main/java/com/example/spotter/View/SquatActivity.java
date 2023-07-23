@@ -85,7 +85,7 @@ public class SquatActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.w(Lobster, "Failed to retrieve value.");
             }
         });
 

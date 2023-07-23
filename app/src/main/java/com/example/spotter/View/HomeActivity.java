@@ -83,14 +83,10 @@ public class HomeActivity extends AppCompatActivity {
 
         squatsButton = findViewById(R.id.squatsButton);
         deadliftsButton = findViewById(R.id.deadliftsButton);
-        curlsButton = findViewById(R.id.curlsButton);
-        lateralButton = findViewById(R.id.lateralButton);
         logOut = findViewById(R.id.logOutbutton);
 
         squatsButton.setOnClickListener(squatsActivity);
         deadliftsButton.setOnClickListener(deadliftsActivity);
-        curlsButton.setOnClickListener(curlsActivity);
-        lateralButton.setOnClickListener(lateralActivity);
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override

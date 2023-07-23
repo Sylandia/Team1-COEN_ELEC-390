@@ -15,6 +15,9 @@
         android:theme="@style/Theme.AppCompat"
         tools:targetApi="31">
         <activity
+            android:name=".View.ChartMain"
+            android:exported="false" />
+        <activity
             android:name=".View.SquatActivity"
             android:exported="false" />
         <activity
@@ -44,7 +47,6 @@
         <activity
             android:name=".View.MainActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

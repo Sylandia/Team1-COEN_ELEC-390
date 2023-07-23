@@ -29,7 +29,7 @@ public class DeadliftsActivity extends AppCompatActivity {
 
     static final String Lobster = "Lobster_Deadlift";
 
-    private TextView rightReadingText, leftReadingText, backReadingText;
+    private TextView rightReadingText, leftReadingText, backReadingText, angleText;
     private Button chartButton;
     DatabaseReference refDatabase, sensor;
 
@@ -43,6 +43,7 @@ public class DeadliftsActivity extends AppCompatActivity {
         rightReadingText = findViewById(R.id.Gyro1);
         leftReadingText = findViewById(R.id.Gyro2);
         backReadingText = findViewById(R.id.Flex);
+        angleText =findViewById(R.id.Angle);
 
         refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
 
@@ -63,16 +64,19 @@ public class DeadliftsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                Double gyro1 , gyro2, flex;
+                Double gyro1 , gyro2, flex, angle;
 
                 Map<String, Double> value = (Map<String, Double>) snapshot.getValue(true);
-                gyro1 = value.get("Gyro1");
-                gyro2 = value.get("Gyro2");
-                flex = value.get("Flex");
+                gyro1 = value.get("Angle1x");
+                gyro2 = value.get("Angle1y");
+                flex = value.get("Angle2x");
+                angle = value.get("Angle2y");
+
 
                 rightReadingText.setText(gyro1.toString());
                 leftReadingText.setText(gyro2.toString());
                 backReadingText.setText(flex.toString());
+                angleText.setText(angle.toString());
 
                 Log.d(Lobster, "Value is: " + value);
             }

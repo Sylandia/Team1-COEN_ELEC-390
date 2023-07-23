@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.example.spotter.R;
@@ -19,7 +20,7 @@ public class SquatActivity extends AppCompatActivity {
 
     static final String Lobster = "Lobster_Log";
 
-    private EditText rightReadingText, leftReadingText, backReadingText;
+    private TextView angle1x, angle1y, angle2x, angle2y, flex;
     private Button chartButton;
 
     @Override
@@ -27,6 +28,13 @@ public class SquatActivity extends AppCompatActivity {
         // Inflate the layout for this fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_squats);
+
+        angle1x = findViewById(R.id.deadlift_a1x);
+        angle1y = findViewById(R.id.deadlift_a1y);
+        angle2x = findViewById(R.id.deadlift_a2x);
+        angle2y = findViewById(R.id.deadlift_a2y);
+        flex    = findViewById(R.id.deadlift_flex);
+
         chartButton = findViewById(R.id.chartButton);
 
         getSupportActionBar().setTitle("Squats");

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,10 +27,14 @@ import java.util.Map;
 
 public class DeadliftsActivity extends AppCompatActivity {
 
+    private boolean timerPaused = false;
+    private boolean timerRunning = false;
+    private CountDownTimer countDownTimer;
+    private int counter;
     static final String Lobster = "Lobster_Deadlift";
 
-    private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text, relativeAngleX_text, relativeAngleY_text, helpButton;
-    private Button chartButton;
+    private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text, relativeAngleX_text, relativeAngleY_text, clockTextView;
+    private Button helpButton, chartButton, startClockButton, resetClockButton;
     DatabaseReference refDatabase, sensor;
 
     private View.OnClickListener helpActivity = new View.OnClickListener() {
@@ -61,6 +66,31 @@ public class DeadliftsActivity extends AppCompatActivity {
 
 
         helpButton = findViewById(R.id.helpButton);
+        //startClockButton = findViewById(R.id.startClockButton);
+        //resetClockButton = findViewById(R.id.resetClockButton);
+        //clockTextView = findViewById(R.id.clockTextView);
+
+        startClockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (timerRunning) {
+                    if (timerPaused) {
+                        resumeTimer();
+                    } else {
+                        pauseTimer();
+                    }
+                } else {
+                    startTimer();
+                }
+            }
+        });
+
+        resetClockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetTimer();
+            }
+        });
 
         refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
 
@@ -127,11 +157,68 @@ public class DeadliftsActivity extends AppCompatActivity {
         });
     }
 
+    private void startTimer() {
+        timerRunning = true;
+        countDownTimer = new CountDownTimer(30000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                counter++;
+                clockTextView.setText(String.valueOf(counter));
+            }
+
+            public void onFinish() {
+                clockTextView.setText("Stop");
+                stopTimer();
+            }
+        }.start();
+    }
+
+    private void pauseTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        timerPaused = true;
+    }
+
+    private void resumeTimer() {
+        timerRunning = true;
+        timerPaused = false;
+        countDownTimer = new CountDownTimer((30 - counter) * 1000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                counter++;
+                clockTextView.setText(String.valueOf(counter));
+            }
+
+            public void onFinish() {
+                clockTextView.setText("Stop");
+                stopTimer();
+            }
+        }.start();
+    }
+
+    private void stopTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        timerRunning = false;
+        timerPaused = false;
+        counter = 0;
+        clockTextView.setText(String.valueOf(counter));
+    }
+
+    private void resetTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        timerRunning = false;
+        timerPaused = false;
+        counter = 0;
+        clockTextView.setText(String.valueOf(counter));
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            // Home button clicked
-            FirebaseAuth.getInstance().signOut(); //added to sign out
+            FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             return true;

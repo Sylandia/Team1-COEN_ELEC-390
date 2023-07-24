@@ -40,6 +40,7 @@
         android:layout_height="wrap_content"
         android:hint="@string/password"
         app:endIconMode="password_toggle">
+
         <!-- Inside TextInputLayout we have TextInputEditText -->
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/passwordTextS"

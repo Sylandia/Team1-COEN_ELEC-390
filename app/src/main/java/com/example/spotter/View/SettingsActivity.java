@@ -36,6 +36,15 @@ public class SettingsActivity extends AppCompatActivity {
         }
     };
 
+    private View.OnClickListener accActivity = new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        Log.d(Lobster, "Go to Account Settings");
+        Intent intent = new Intent(SettingsActivity.this, AccountActivity.class);
+        startActivity(intent);
+    }
+};
+
     private View.OnClickListener languageFragment = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -53,9 +62,13 @@ public class SettingsActivity extends AppCompatActivity {
 
         languageButton = findViewById(R.id.languageButton);
         notifButton = findViewById(R.id.notifButton);
+        buttonAcc = findViewById(R.id.buttonAcc);
 
         languageButton.setOnClickListener(languageFragment);
         notifButton.setOnClickListener(notifActivity);
+        buttonAcc.setOnClickListener(accActivity);
+
+
 
         lightModeButton = findViewById(R.id.lightModeButton);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Dark-Light Mode Switch");

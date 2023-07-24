@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +27,7 @@ public class SquatActivity extends AppCompatActivity {
 
     static final String Lobster = "Lobster_Log";
 
-    private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text;
+    private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text, relativeAngleX_text, relativeAngleY_text;
     private Button chartButton;
 
     DatabaseReference refDatabase, sensor;
@@ -44,6 +43,8 @@ public class SquatActivity extends AppCompatActivity {
         angle2x_text = findViewById(R.id.squat_a2x);
         angle2y_text = findViewById(R.id.squat_a2y);
         flex_text    = findViewById(R.id.squat_flex);
+        relativeAngleX_text = findViewById(R.id.squat_ra1);
+        relativeAngleY_text = findViewById(R.id.squat_ra2);
 
         chartButton = findViewById(R.id.chartButton);
 
@@ -64,7 +65,7 @@ public class SquatActivity extends AppCompatActivity {
         refDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Double angle1x, angle1y, angle2x, angle2y, flex;
+                Double angle1x, angle1y, angle2x, angle2y, flex, relative_a1, relative_a2;
 
                 Map<String, Double> value = (Map<String, Double>) snapshot.getValue(true);
                 angle1x = value.get("Angle1x");
@@ -79,6 +80,26 @@ public class SquatActivity extends AppCompatActivity {
                 angle2x_text.setText(angle2x.toString());
                 angle2y_text.setText(angle2y.toString());
                 flex_text.setText(flex.toString());
+
+                relative_a1 = CalculateRelativeAngle(angle1x, angle2x);
+                if (relative_a1 > 0 && relative_a1 < 180) {
+                    relativeAngleX_text.setText(relative_a1.toString());
+                }
+                else
+                {
+                    relative_a1 = CalculateRelativeAngle(angle2x, angle1x);
+                    relativeAngleX_text.setText(relative_a1.toString());
+                }
+
+                relative_a2 = CalculateRelativeAngle(angle1y, angle2y);
+                if (relative_a2 > 0 && relative_a2 < 180) {
+                    relativeAngleY_text.setText(relative_a2.toString());
+                }
+                else
+                {
+                    relative_a2 = CalculateRelativeAngle(angle2y, angle1y);
+                    relativeAngleY_text.setText(relative_a2.toString());
+                }
 
                 Log.d(Lobster, "Value is: " + value);
             }
@@ -88,31 +109,6 @@ public class SquatActivity extends AppCompatActivity {
                 Log.w(Lobster, "Failed to retrieve value.");
             }
         });
-
-
-        /*refDatabase.addValueEventListener(new ValueEventListener() { // to update the values from realtime database
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                Double angle1x, angle1y, angle2x, angle2y, flex;
-
-                Map<String, Double> value = (Map<String, Double>) snapshot.getValue(true);
-                angle1x = value.get("Angle1x");
-                angle1y = value.get("Angle1y");
-                angle2x = value.get("Angle2x");
-                angle2y = value.get("Angle2y");
-                flex = value.get("Flex");
-
-
-                angle1x_text.setText(angle1x.toString());
-                angle1y_text.setText(angle1y.toString());
-                angle2x_text.setText(angle2x.toString());
-                angle2y_text.setText(angle2y.toString());
-                flex_text.setText(flex.toString());
-
-                Log.d(Lobster, "Value is: " + value);
-            }
-        });*/
 
     }
 
@@ -126,6 +122,10 @@ public class SquatActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public double CalculateRelativeAngle(double imu1, double imu2){
+        return (imu1-imu2);
     }
 
 

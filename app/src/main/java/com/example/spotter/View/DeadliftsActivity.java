@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -28,10 +29,14 @@ import java.util.Objects;
 
 public class DeadliftsActivity extends AppCompatActivity {
 
+    private boolean timerPaused = false;
+    private boolean timerRunning = false;
+    private CountDownTimer countDownTimer;
+    private int counter;
     static final String Lobster = "Lobster_Deadlift";
 
-    private TextView rightReadingText, leftReadingText, backReadingText, helpButton;
-    private Button chartButton;
+    private TextView rightReadingText, leftReadingText, backReadingText, clockTextView;
+    private Button helpButton, chartButton, startClockButton, resetClockButton;
     DatabaseReference refDatabase, sensor;
 
     private View.OnClickListener helpActivity = new View.OnClickListener() {
@@ -46,15 +51,38 @@ public class DeadliftsActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deadlifts);
         chartButton = findViewById(R.id.chartButton);
         rightReadingText = findViewById(R.id.Gyro1);
         leftReadingText = findViewById(R.id.Gyro2);
         backReadingText = findViewById(R.id.Flex);
-
         helpButton = findViewById(R.id.helpButton);
+        startClockButton = findViewById(R.id.startClockButton);
+        resetClockButton = findViewById(R.id.resetClockButton);
+        clockTextView = findViewById(R.id.clockTextView);
+
+        startClockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (timerRunning) {
+                    if (timerPaused) {
+                        resumeTimer();
+                    } else {
+                        pauseTimer();
+                    }
+                } else {
+                    startTimer();
+                }
+            }
+        });
+
+        resetClockButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetTimer();
+            }
+        });
 
         refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
 
@@ -71,20 +99,20 @@ public class DeadliftsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        refDatabase.addValueEventListener(new ValueEventListener() { // to update the values from realtime database
+
+        refDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                Double gyro1 , gyro2, flex;
+                Double gyro1, gyro2, flex;
 
                 Map<String, Double> value = (Map<String, Double>) snapshot.getValue(true);
                 gyro1 = value.get("Gyro1");
                 gyro2 = value.get("Gyro2");
                 flex = value.get("Flex");
 
-                rightReadingText.setText(gyro1.toString());
-                leftReadingText.setText(gyro2.toString());
-                backReadingText.setText(flex.toString());
+                //rightReadingText.setText(gyro1.toString());
+                //leftReadingText.setText(gyro2.toString());
+                //backReadingText.setText(flex.toString());
 
                 Log.d(Lobster, "Value is: " + value);
             }
@@ -96,18 +124,72 @@ public class DeadliftsActivity extends AppCompatActivity {
         });
     }
 
+    private void startTimer() {
+        timerRunning = true;
+        countDownTimer = new CountDownTimer(30000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                counter++;
+                clockTextView.setText(String.valueOf(counter));
+            }
+
+            public void onFinish() {
+                clockTextView.setText("Stop");
+                stopTimer();
+            }
+        }.start();
+    }
+
+    private void pauseTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        timerPaused = true;
+    }
+
+    private void resumeTimer() {
+        timerRunning = true;
+        timerPaused = false;
+        countDownTimer = new CountDownTimer((30 - counter) * 1000, 1000) {
+            public void onTick(long millisUntilFinished) {
+                counter++;
+                clockTextView.setText(String.valueOf(counter));
+            }
+
+            public void onFinish() {
+                clockTextView.setText("Stop");
+                stopTimer();
+            }
+        }.start();
+    }
+
+    private void stopTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        timerRunning = false;
+        timerPaused = false;
+        counter = 0;
+        clockTextView.setText(String.valueOf(counter));
+    }
+
+    private void resetTimer() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        timerRunning = false;
+        timerPaused = false;
+        counter = 0;
+        clockTextView.setText(String.valueOf(counter));
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            // Home button clicked
-            FirebaseAuth.getInstance().signOut(); //added to sign out
+            FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-
 }

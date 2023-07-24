@@ -172,7 +172,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="50dp"
         android:textSize="20dp"
         android:text="Flex Sensor:"
         />
@@ -193,14 +193,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="30dp"
         android:text="Start Acquisition"
         />
 
     <Button
+        android:layout_gravity="center"
         android:id="@+id/helpButton"
         android:layout_width="118dp"
         android:layout_height="57dp"
         android:text="Help"
-        android:layout_marginTop="500dp" />
+        android:layout_marginTop="10dp" />
 </LinearLayout>

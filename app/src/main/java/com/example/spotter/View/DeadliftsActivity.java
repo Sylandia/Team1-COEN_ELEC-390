@@ -70,7 +70,7 @@ public class DeadliftsActivity extends AppCompatActivity {
         //resetClockButton = findViewById(R.id.resetClockButton);
         //clockTextView = findViewById(R.id.clockTextView);
 
-        startClockButton.setOnClickListener(new View.OnClickListener() {
+        /*startClockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (timerRunning) {
@@ -90,7 +90,7 @@ public class DeadliftsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 resetTimer();
             }
-        });
+        });*/
 
         refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
 

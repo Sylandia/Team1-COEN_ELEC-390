@@ -74,7 +74,7 @@ public class SquatActivity extends AppCompatActivity {
         //resetClockButton = findViewById(R.id.resetClockButton);
         //clockTextView = findViewById(R.id.clockTextView);
 
-        startClockButton.setOnClickListener(new View.OnClickListener() {
+        /*startClockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (timerRunning) {
@@ -87,14 +87,14 @@ public class SquatActivity extends AppCompatActivity {
                     startTimer();
                 }
             }
-        });
+        });*/
 
-        resetClockButton.setOnClickListener(new View.OnClickListener() {
+        /*resetClockButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 resetTimer();
             }
-        });
+        });*/
 
 
 

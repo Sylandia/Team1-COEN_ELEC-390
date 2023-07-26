@@ -112,56 +112,14 @@ public class SquatActivity extends AppCompatActivity {
             }
         });
 
-        refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
+        UpdateRealTimeData();
 
-        refDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Double angle1x, angle1y, angle2x, angle2y, flex, relative_a1, relative_a2;
+    }
 
-                Map<String, Double> value = (Map<String, Double>) snapshot.getValue(true);
-                angle1x = value.get("Angle1x");
-                angle1y = value.get("Angle1y");
-                angle2x = value.get("Angle2x");
-                angle2y = value.get("Angle2y");
-                flex = value.get("Flex");
-
-
-                angle1x_text.setText(angle1x.toString());
-                angle1y_text.setText(angle1y.toString());
-                angle2x_text.setText(angle2x.toString());
-                angle2y_text.setText(angle2y.toString());
-                flex_text.setText(flex.toString());
-
-                relative_a1 = CalculateRelativeAngle(angle1x, angle2x);
-                if (relative_a1 > 0 && relative_a1 < 180) {
-                    relativeAngleX_text.setText(relative_a1.toString());
-                }
-                else
-                {
-                    relative_a1 = CalculateRelativeAngle(angle2x, angle1x);
-                    relativeAngleX_text.setText(relative_a1.toString());
-                }
-
-                relative_a2 = CalculateRelativeAngle(angle1y, angle2y);
-                if (relative_a2 > 0 && relative_a2 < 180) {
-                    relativeAngleY_text.setText(relative_a2.toString());
-                }
-                else
-                {
-                    relative_a2 = CalculateRelativeAngle(angle2y, angle1y);
-                    relativeAngleY_text.setText(relative_a2.toString());
-                }
-
-                Log.d(Lobster, "Value is: " + value);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w(Lobster, "Failed to retrieve value.");
-            }
-        });
-
+    @Override
+    protected void onResume() {
+        UpdateRealTimeData();
+        super.onResume();
     }
 
     private void startTimer() {
@@ -238,6 +196,56 @@ public class SquatActivity extends AppCompatActivity {
         return (imu1-imu2);
     }
 
+    private void UpdateRealTimeData(){
+        refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
 
+        refDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Double angle1x, angle1y, angle2x, angle2y, flex, relative_a1, relative_a2;
+
+                Map<String, Double> value = (Map<String, Double>) snapshot.getValue(true);
+                angle1x = value.get("Angle1x");
+                angle1y = value.get("Angle1y");
+                angle2x = value.get("Angle2x");
+                angle2y = value.get("Angle2y");
+                flex = value.get("Flex");
+
+
+                angle1x_text.setText(angle1x.toString());
+                angle1y_text.setText(angle1y.toString());
+                angle2x_text.setText(angle2x.toString());
+                angle2y_text.setText(angle2y.toString());
+                flex_text.setText(flex.toString());
+
+                relative_a1 = CalculateRelativeAngle(angle1x, angle2x);
+                if (relative_a1 > 0 && relative_a1 < 180) {
+                    relativeAngleX_text.setText(relative_a1.toString());
+                }
+                else
+                {
+                    relative_a1 = CalculateRelativeAngle(angle2x, angle1x);
+                    relativeAngleX_text.setText(relative_a1.toString());
+                }
+
+                relative_a2 = CalculateRelativeAngle(angle1y, angle2y);
+                if (relative_a2 > 0 && relative_a2 < 180) {
+                    relativeAngleY_text.setText(relative_a2.toString());
+                }
+                else
+                {
+                    relative_a2 = CalculateRelativeAngle(angle2y, angle1y);
+                    relativeAngleY_text.setText(relative_a2.toString());
+                }
+
+                Log.d(Lobster, "Value is: " + value);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(Lobster, "Failed to retrieve value.");
+            }
+        });
+    }
 
 }

@@ -15,6 +15,9 @@
         android:theme="@style/Theme.AppCompat.DayNight"
         tools:targetApi="31">
         <activity
+            android:name=".View.DataAcquisition"
+            android:exported="false" />
+        <activity
             android:name=".View.DeadliftHistory"
             android:parentActivityName=".View.AccountActivity" />
         <activity
@@ -73,7 +76,6 @@
         <activity
             android:name=".View.MainActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

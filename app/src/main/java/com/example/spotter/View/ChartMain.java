@@ -51,7 +51,7 @@ public class ChartMain extends AppCompatActivity {
                     int delayTime = Integer.parseInt(delay.getText().toString().trim());
                     startTransfer = true;
                     stopTransfer = false;
-                    refDatabase = FirebaseDatabase.getInstance().getReference("Flag"); // choose the correct pathing
+                    refDatabase = FirebaseDatabase.getInstance().getReference("Flags"); // choose the correct pathing
 
                     // Create a SensorData object with the data you want to send
                     SensorData data = new SensorData(startTransfer, stopTransfer, delayTime);
@@ -60,7 +60,18 @@ public class ChartMain extends AppCompatActivity {
                     // Set the value directly at a specific location if you have a fixed path:
                     refDatabase.child("startRead").setValue(startTransfer);
                     refDatabase.child("stopRead").setValue(stopTransfer);
-                    refDatabase.child("delay").setValue(delayTime);//
+                    refDatabase.child("delay").setValue(delayTime);
+
+                    stopBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startTransfer = false;
+                            stopTransfer = true;
+                            refDatabase.child("startRead").setValue(startTransfer);
+                            refDatabase.child("stopRead").setValue(stopTransfer);
+                            refDatabase.child("delay").setValue(-1);
+                        }
+                    });
                 }
             }
 

@@ -18,7 +18,7 @@ import java.util.Objects;
 
 public class NotificationsActivity extends AppCompatActivity {
 
-    static final String Lobster = "Lobster_Log";
+    static final String Lobster = "Lobster_Notification";
     private Button soundButton;
     private SwitchMaterial popUpButton, vibrateButton;
 

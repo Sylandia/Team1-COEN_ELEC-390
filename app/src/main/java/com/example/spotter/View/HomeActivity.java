@@ -19,7 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity {
 
-    static final String Lobster = "Lobster_Log";
+    static final String Lobster = "Lobster_Home";
 
     private Button squatsButton, deadliftsButton, curlsButton, lateralButton, logOut;
 

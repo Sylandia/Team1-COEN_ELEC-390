@@ -27,7 +27,7 @@ public class ChartMain extends AppCompatActivity {
     EditText delay;
     Button startBtn, stopBtn;
 
-    static final String Lobster = "Lobster_Log";
+    static final String Lobster = "Lobster_Chart";
     DatabaseReference refDatabase;
     boolean startTransfer = false;
     boolean stopTransfer = false;

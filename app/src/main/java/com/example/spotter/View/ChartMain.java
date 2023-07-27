@@ -60,7 +60,7 @@ public class ChartMain extends AppCompatActivity {
                     // Set the value directly at a specific location if you have a fixed path:
                     refDatabase.child("startRead").setValue(startTransfer);
                     refDatabase.child("stopRead").setValue(stopTransfer);
-                    refDatabase.child("delay").setValue(delayTime);
+                    refDatabase.child("delay").setValue(delayTime);//
                 }
             }
 

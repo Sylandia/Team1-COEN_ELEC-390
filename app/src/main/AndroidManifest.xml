@@ -12,11 +12,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AppCompat.DayNight"
+        android:theme="@style/Theme.AppCompat"
         tools:targetApi="31">
-        <activity
-            android:name=".View.DataAcquisition"
-            android:exported="false" />
         <activity
             android:name=".View.DeadliftHistory"
             android:parentActivityName=".View.AccountActivity" />
@@ -53,13 +50,11 @@
         <activity
             android:name=".View.DeadliftsActivity"
             android:exported="false" /> <!-- <activity -->
-        <!-- android:name=".View.LateralsActivity" -->
-        <!-- android:exported="false" /> -->
-        <!-- <activity -->
-        <!-- android:name=".View.CurlsActivity" -->
-        <!-- android:exported="false" /> -->
         <activity
             android:name=".View.LineChartView"
+            android:exported="false" />
+        <activity
+            android:name=".View.ChartMain"
             android:exported="false" />
         <activity
             android:name=".View.HomeActivity"
@@ -67,9 +62,6 @@
         <activity
             android:name=".View.SignUpActivity"
             android:parentActivityName=".View.MainActivity" />
-        <activity
-            android:name=".View.LoginActivity"
-            android:exported="false" />
         <activity
             android:name=".View.RegisterActivity"
             android:exported="false" />

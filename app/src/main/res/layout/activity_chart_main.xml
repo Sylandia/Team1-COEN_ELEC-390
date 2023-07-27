@@ -29,14 +29,16 @@
         app:endIconMode="clear_text">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/usernameTextM"
+            android:id="@+id/delayText"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:textAlignment="center"
-            android:inputType="textEmailAddress"/>
+            android:inputType="number"
+            android:digits="0123456789"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
+        android:id="@+id/startButton"
         android:layout_marginTop="100dp"
         android:gravity="center"
         android:layout_width="wrap_content"
@@ -47,6 +49,7 @@
     </Button>
 
     <Button
+        android:id="@+id/stopButton"
         android:layout_marginTop="100dp"
         android:gravity="center"
         android:layout_width="wrap_content"

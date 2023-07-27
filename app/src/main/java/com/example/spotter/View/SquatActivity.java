@@ -42,6 +42,8 @@ public class SquatActivity extends AppCompatActivity {
     private TextView clockTextView;
     private Button chartButton, helpButton, startClockButton, resetClockButton;
 
+    DatabaseReference refDatabase;
+
     private View.OnClickListener helpActivity = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -52,7 +54,7 @@ public class SquatActivity extends AppCompatActivity {
         }
     };
 
-    DatabaseReference refDatabase, sensor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +109,7 @@ public class SquatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(Lobster, "Go to charts");
-                Intent intent = new Intent(SquatActivity.this, LineChartView.class);
+                Intent intent = new Intent(SquatActivity.this, ChartMain.class);
                 startActivity(intent);
             }
         });

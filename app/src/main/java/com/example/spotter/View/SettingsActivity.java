@@ -19,7 +19,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity {
-    static final String Lobster = "Lobster_Log";
+    static final String Lobster = "Lobster_Settings";
 
     private Button buttonAcc, notifButton, languageButton;
     private SwitchMaterial lightModeButton;

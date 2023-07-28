@@ -25,13 +25,15 @@ import java.util.Map;
 
 public class ChartMain extends AppCompatActivity {
     EditText delay;
-    Button startBtn, stopBtn;
+    Button startBtn, stopBtn, calibBtn;
 
-    static final String Lobster = "Lobster_Chart";
+    static final String Lobster = "Lobster_ChartMain";
     DatabaseReference refDatabase;
     boolean startTransfer = false;
     boolean stopTransfer = false;
+    boolean calib = false;
     Context context = this;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,38 @@ public class ChartMain extends AppCompatActivity {
         startBtn = findViewById(R.id.startButton);
         stopBtn = findViewById(R.id.stopButton);
         delay = findViewById(R.id.delayText);
+        calibBtn = findViewById(R.id.calibrateBtn);
+        //initially some btns are invisible
+        startBtn.setVisibility(View.INVISIBLE);
+        stopBtn.setVisibility(View.INVISIBLE);
+        delay.setVisibility(View.INVISIBLE);
 
+        refDatabase = FirebaseDatabase.getInstance().getReference("Flags"); // choose the correct pathing
+
+        calibBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(context, "Calibration will take a second", Toast.LENGTH_LONG).show();
+                calib = true;
+                refDatabase.child("calib").setValue(calib);
+                DatabaseReference calibRef = refDatabase.child("calib");
+                calibRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        boolean calibValue = snapshot.getValue(boolean.class);
+                        if (!calibValue)  {
+                            startBtn.setVisibility(View.VISIBLE);
+                            calibBtn.setVisibility(View.INVISIBLE);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.d("Lobster", "Calibration Unsuccessful");
+                    }
+                });
+            }
+        });
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -51,25 +84,35 @@ public class ChartMain extends AppCompatActivity {
                     int delayTime = Integer.parseInt(delay.getText().toString().trim());
                     startTransfer = true;
                     stopTransfer = false;
-                    refDatabase = FirebaseDatabase.getInstance().getReference("Flags"); // choose the correct pathing
-
-                    // Create a SensorData object with the data you want to send
-                    SensorData data = new SensorData(startTransfer, stopTransfer, delayTime);
-
 
                     // Set the value directly at a specific location if you have a fixed path:
                     refDatabase.child("startRead").setValue(startTransfer);
-                    refDatabase.child("stopRead").setValue(stopTransfer);
-                    refDatabase.child("delay").setValue(delayTime);
+                    DatabaseReference startRef = refDatabase.child("startRead");
+                    startRef.addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            boolean startValue = snapshot.getValue(boolean.class);
+                            if (!startValue)  {
+                                startBtn.setVisibility(View.INVISIBLE);
+                                stopBtn.setVisibility(View.VISIBLE);
+                                //TODO: ADD VALUES FROM SENSORS TO SQL DATABASE
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Log.d("Lobster", "Calibration Unsuccessful");
+                        }
+                    });
 
                     stopBtn.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             startTransfer = false;
                             stopTransfer = true;
-                            refDatabase.child("startRead").setValue(startTransfer);
                             refDatabase.child("stopRead").setValue(stopTransfer);
-                            refDatabase.child("delay").setValue(-1);
+                            stopBtn.setVisibility(View.INVISIBLE);
+                            calibBtn.setVisibility(View.VISIBLE);
                         }
                     });
                 }

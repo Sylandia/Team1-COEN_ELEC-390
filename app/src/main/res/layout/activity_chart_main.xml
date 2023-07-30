@@ -59,9 +59,19 @@
 
     </Button>
 
+    <TextView
+        android:layout_gravity="center"
+        android:layout_marginTop="30dp"
+        android:id="@+id/countdownTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start in: 0"
+        android:textSize="20dp">
+    </TextView>
+
     <Button
         android:id="@+id/stopButton"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="30dp"
         android:gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

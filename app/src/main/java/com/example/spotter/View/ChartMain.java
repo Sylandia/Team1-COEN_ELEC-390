@@ -5,6 +5,7 @@ import static android.app.PendingIntent.getActivity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -15,6 +16,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.spotter.Controller.DataBaseHelper;
+import com.example.spotter.Model.FlexSensor;
+import com.example.spotter.Model.ImuSensor;
 import com.example.spotter.R;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,13 +26,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Map;
+
 public class ChartMain extends AppCompatActivity {
     EditText delay;
     TextView countDown;
     Button startBtn, stopBtn, calibBtn;
 
     static final String Lobster = "Lobster_ChartMain";
-    DatabaseReference refDatabase;
+    DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
+    DatabaseReference sensorDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); //path for sensor data
     boolean startTransfer = false;
     boolean stopTransfer = false;
     boolean calib = false;
@@ -56,7 +63,7 @@ public class ChartMain extends AppCompatActivity {
         delay.setVisibility(View.INVISIBLE);
         countDown.setVisibility(View.INVISIBLE);
 
-        refDatabase = FirebaseDatabase.getInstance().getReference("Flags"); // choose the correct pathing
+         // choose the correct pathing
 
         calibBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,9 +71,9 @@ public class ChartMain extends AppCompatActivity {
                 Toast.makeText(context, "Calibration will take a second. Don't move sensors!", Toast.LENGTH_LONG).show();
                 calib = true;
                 stopTransfer = false;
-                refDatabase.child("calib").setValue(calib);
-                refDatabase.child("stopRead").setValue(stopTransfer);
-                DatabaseReference calibRef = refDatabase.child("calib");
+                flagDatabase.child("calib").setValue(calib);
+                flagDatabase.child("stopRead").setValue(stopTransfer);
+                DatabaseReference calibRef = flagDatabase.child("calib");
                 calibRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -107,8 +114,8 @@ public class ChartMain extends AppCompatActivity {
                             stopTransfer = false;
 
                             // Set the value directly at a specific location if you have a fixed path:
-                            refDatabase.child("startRead").setValue(startTransfer);
-                            DatabaseReference startRef = refDatabase.child("startRead");
+                            flagDatabase.child("startRead").setValue(startTransfer);
+                            DatabaseReference startRef = flagDatabase.child("startRead");
                             startRef.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -116,7 +123,7 @@ public class ChartMain extends AppCompatActivity {
                                     if (!startValue)  {
                                         startBtn.setVisibility(View.INVISIBLE);
                                         stopBtn.setVisibility(View.VISIBLE);
-                                        //TODO: ADD VALUES FROM SENSORS TO SQL DATABASE
+                                        sendSensorDataToDatabase();
                                     }
                                 }
 
@@ -137,8 +144,6 @@ public class ChartMain extends AppCompatActivity {
                     }, delayTime*1000); //Time in millisenconds
 
 */
-
-
                 }
             }
 
@@ -149,7 +154,7 @@ public class ChartMain extends AppCompatActivity {
             public void onClick(View view) {
                 startTransfer = false;
                 stopTransfer = true;
-                refDatabase.child("stopRead").setValue(stopTransfer);
+                flagDatabase.child("stopRead").setValue(stopTransfer);
                 stopBtn.setVisibility(View.INVISIBLE);
                 calibBtn.setVisibility(View.VISIBLE);
                 delay.setVisibility(View.INVISIBLE);
@@ -158,7 +163,25 @@ public class ChartMain extends AppCompatActivity {
 
     }
 
+    private void sendSensorDataToDatabase() {
+        sensorDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Map<String,Double> value = (Map<String, Double>) snapshot.getValue(true);
+                FlexSensor flex = new FlexSensor(value.get("Flex"));
+                ImuSensor imu = new ImuSensor(value.get("Angle1x"), value.get("Angle1y"), value.get("Angle2x"), value.get("Angle2y"));
 
+                DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
+                dataBaseHelper.insertSensors(flex, imu, "ChartMain");
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d("Lobster","Failed to retrieve sensor value");
+            }
+        });
+    }
 
 
 }

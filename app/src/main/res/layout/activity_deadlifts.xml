@@ -70,6 +70,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="0.00"
+            android:maxLength="6"
             android:textSize="25dp" />
 
         <TextView
@@ -79,6 +80,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="0.00"
+            android:maxLength="6"
             android:textSize="25dp" />
     </LinearLayout>
 
@@ -104,6 +106,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="0.00"
+            android:maxLength="6"
             android:textSize="25dp" />
 
         <TextView
@@ -113,6 +116,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="0.00"
+            android:maxLength="6"
             android:textSize="25dp" />
     </LinearLayout>
 
@@ -155,6 +159,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="0.00"
+            android:maxLength="6"
             android:textSize="25dp" />
 
         <TextView
@@ -164,6 +169,7 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="0.00"
+            android:maxLength="6"
             android:textSize="25dp" />
     </LinearLayout>
 
@@ -186,6 +192,7 @@
         android:layout_marginTop="20dp"
         android:textSize="25dp"
         android:text="0.00"
+        android:maxLength="6"
         />
 
     <Button

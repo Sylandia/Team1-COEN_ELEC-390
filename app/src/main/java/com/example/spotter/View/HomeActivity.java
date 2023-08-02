@@ -21,9 +21,17 @@ public class HomeActivity extends AppCompatActivity {
 
     static final String Lobster = "Lobster_Home";
 
-    private Button squatsButton, deadliftsButton, curlsButton, lateralButton, logOut;
+    private Button squatsButton, deadliftsButton, warmupButton, curlsButton, lateralButton, logOut;
 
     private FirebaseUser user;
+
+    private View.OnClickListener warmupActivity = new View.OnClickListener() { //Vinnie
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(getBaseContext(), WarmupActivity.class);
+            startActivity(intent);
+        }
+    };
 
     private View.OnClickListener squatsActivity = new View.OnClickListener() {
         @Override
@@ -87,10 +95,13 @@ public class HomeActivity extends AppCompatActivity {
 
         squatsButton = findViewById(R.id.squatsButton);
         deadliftsButton = findViewById(R.id.deadliftsButton);
+        warmupButton = findViewById(R.id.warmupButton);  //Vinnie
         logOut = findViewById(R.id.logOutbutton);
 
         squatsButton.setOnClickListener(squatsActivity);
         deadliftsButton.setOnClickListener(deadliftsActivity);
+        warmupButton.setOnClickListener(warmupActivity); //Vinnie
+
 
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override

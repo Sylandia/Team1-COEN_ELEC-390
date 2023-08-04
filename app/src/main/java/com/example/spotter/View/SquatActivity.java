@@ -1,10 +1,22 @@
 package com.example.spotter.View;
 
+import static com.example.spotter.Controller.NotificationHelper.SQUAT;
+
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentManager;
 
 
@@ -16,6 +28,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import com.example.spotter.Controller.NotificationHelper;
 import com.example.spotter.Model.FlexSensor;
 import com.example.spotter.Model.ImuSensor;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +58,7 @@ public class SquatActivity extends AppCompatActivity {
     private TextView clockTextView;
     private Button chartButton, helpButton, startClockButton, resetClockButton;
     private DataBaseHelper db;
+    private NotificationManagerCompat notificationManager;
 
     DatabaseReference refDatabase;
 
@@ -59,24 +73,25 @@ public class SquatActivity extends AppCompatActivity {
     };
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_squats);
         db = new DataBaseHelper(SquatActivity.this);
-
         angle1x_text = findViewById(R.id.squat_a1x);
         angle1y_text = findViewById(R.id.squat_a1y);
         angle2x_text = findViewById(R.id.squat_a2x);
         angle2y_text = findViewById(R.id.squat_a2y);
-        flex_text    = findViewById(R.id.squat_flex);
+        flex_text = findViewById(R.id.squat_flex);
         relativeAngleX_text = findViewById(R.id.squat_ra1);
         relativeAngleY_text = findViewById(R.id.squat_ra2);
-
         chartButton = findViewById(R.id.chartButton);
         helpButton = findViewById(R.id.helpButton);
+        //Notification
+        notificationManager =  NotificationManagerCompat.from(this);
+
+
         //startClockButton = findViewById(R.id.startClockButton);
         //resetClockButton = findViewById(R.id.resetClockButton);
         //clockTextView = findViewById(R.id.clockTextView);
@@ -104,7 +119,6 @@ public class SquatActivity extends AppCompatActivity {
         });*/
 
 
-
         helpButton.setOnClickListener(helpActivity);
 
         getSupportActionBar().setTitle("Squats");
@@ -120,13 +134,25 @@ public class SquatActivity extends AppCompatActivity {
         });
 
         UpdateRealTimeData();
-        db.getIMU();
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        UpdateRealTimeData();
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
         UpdateRealTimeData();
     }
 
@@ -192,7 +218,6 @@ public class SquatActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             // Home button clicked
-            FirebaseAuth.getInstance().signOut(); //added to sign out
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             return true;
@@ -200,21 +225,22 @@ public class SquatActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public double CalculateRelativeAngle(double imu1, double imu2){
-        return (imu1-imu2);
+    public double CalculateRelativeAngle(double imu1, double imu2) {
+        return (imu1 - imu2);
     }
 
-    private void UpdateRealTimeData(){
+    private void UpdateRealTimeData() {
         refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
 
         refDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-               // Double angle1x, angle1y, angle2x, angle2y, flex, relative_a1, relative_a2;
 
                 Map<String, Double> value = (Map<String, Double>) snapshot.getValue(true);
                 FlexSensor flex = new FlexSensor(value.get("Flex"));
-                ImuSensor imu = new ImuSensor(value.get("Angle1x"),value.get("Angle1y"), value.get("Angle2x"), value.get("Angle2y") );
+                ImuSensor imu = new ImuSensor(value.get("Angle1x"), value.get("Angle1y"), value.get("Angle2x"), value.get("Angle2y"));
+
+                squatNotification(imu, flex);
 
                 angle1x_text.setText(String.valueOf(imu.getAngle1_x()));
                 angle1y_text.setText(String.valueOf(imu.getAngle1_y()));
@@ -225,7 +251,7 @@ public class SquatActivity extends AppCompatActivity {
                 relativeAngleY_text.setText(String.valueOf(imu.getRelative_y()));
                 db.insertSensors(flex, imu, "Squats");
 
-                Log.d(Lobster, "Value is: " + value);
+                //Log.d(Lobster, "Value is: " + value);
 
             }
 
@@ -234,6 +260,21 @@ public class SquatActivity extends AppCompatActivity {
                 Log.w(Lobster, "Failed to retrieve value.");
             }
         });
+    }
+    public void squatNotification(ImuSensor i, FlexSensor f) { // have to have notifications enabled
+
+        if (f.getFlex() > 7.99) {
+            Notification notification = new NotificationCompat.Builder(this , SQUAT)
+                    .setSmallIcon(R.drawable.error_notification)
+                    .setContentTitle("Squat Error")
+                    .setContentText("Bending too much")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .build();
+            notificationManager.notify(0, notification);
+            Log.e(Lobster, "Notification Created");
+        }else{
+            //do nothing
+        }
     }
 
 }

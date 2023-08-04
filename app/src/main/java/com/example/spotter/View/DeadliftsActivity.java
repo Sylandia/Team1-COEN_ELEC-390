@@ -1,10 +1,16 @@
 package com.example.spotter.View;
 
+import static com.example.spotter.Controller.NotificationHelper.DEADLIFT;
+import static com.example.spotter.Controller.NotificationHelper.SQUAT;
+
+import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentManager;
 
 
@@ -41,6 +47,7 @@ public class DeadliftsActivity extends AppCompatActivity {
     private Button helpButton, chartButton, startClockButton, resetClockButton;
     DatabaseReference refDatabase, sensor;
     private DataBaseHelper db;
+    private NotificationManagerCompat notificationManager;
 
     private View.OnClickListener helpActivity = new View.OnClickListener() {
         @Override
@@ -57,20 +64,20 @@ public class DeadliftsActivity extends AppCompatActivity {
         // Inflate the layout for this fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_deadlifts);
+        db = new DataBaseHelper(DeadliftsActivity.this);
 
         angle1x_text = findViewById(R.id.deadlift_a1x);
         angle1y_text = findViewById(R.id.deadlift_a1y);
         angle2x_text = findViewById(R.id.deadlift_a2x);
         angle2y_text = findViewById(R.id.deadlift_a2y);
         flex_text = findViewById(R.id.deadlift_flex);
-
         relativeAngleX_text = findViewById(R.id.deadlift_ra1);
         relativeAngleY_text = findViewById(R.id.deadlift_ra2);
-
         chartButton = findViewById(R.id.chartButton);
-
-
         helpButton = findViewById(R.id.helpButton);
+        //Notification
+        notificationManager =  NotificationManagerCompat.from(this);
+
         //startClockButton = findViewById(R.id.startClockButton);
         //resetClockButton = findViewById(R.id.resetClockButton);
         //clockTextView = findViewById(R.id.clockTextView);
@@ -112,18 +119,19 @@ public class DeadliftsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        refDatabase.addValueEventListener(new ValueEventListener() { // to update the values from realtime database
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.w(Lobster, "Failed to retrieve value.");
-            }
-        });
+        UpdateRealTimeData();
+//        refDatabase.addValueEventListener(new ValueEventListener() { // to update the values from realtime database
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Log.w(Lobster, "Failed to retrieve value.");
+//            }
+//        });
     }
 
     private void startTimer() {
@@ -187,7 +195,6 @@ public class DeadliftsActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             return true;
@@ -210,6 +217,8 @@ public class DeadliftsActivity extends AppCompatActivity {
                 FlexSensor flex = new FlexSensor(value.get("Flex"));
                 ImuSensor imu = new ImuSensor(value.get("Angle1x"), value.get("Angle1y"), value.get("Angle2x"), value.get("Angle2y"));
 
+                deadliftNotification(imu, flex);
+
                 angle1x_text.setText(String.valueOf(imu.getAngle1_x()));
                 angle1y_text.setText(String.valueOf(imu.getAngle1_y()));
                 angle2x_text.setText(String.valueOf(imu.getAngle2_x()));
@@ -228,6 +237,21 @@ public class DeadliftsActivity extends AppCompatActivity {
                 Log.w(Lobster, "Failed to retrieve value.");
             }
         });
+    }
+    public void deadliftNotification(ImuSensor i, FlexSensor f) { // have to have notifications enabled
+
+        if (f.getFlex() > 7.99) {
+            Notification notification = new NotificationCompat.Builder(this , DEADLIFT)
+                    .setSmallIcon(R.drawable.error_notification)
+                    .setContentTitle("Deadlift Error")
+                    .setContentText("Bending too much")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .build();
+            notificationManager.notify(1, notification);
+            Log.e(Lobster, "Notification Created");
+        }else{
+            //do nothing
+        }
     }
 
 

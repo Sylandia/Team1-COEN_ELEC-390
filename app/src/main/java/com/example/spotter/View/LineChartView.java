@@ -39,7 +39,7 @@ public class LineChartView extends AppCompatActivity {
 
         Description description = new Description();
         description.setText("IMU Readings");
-        description.setPosition(350f, 15f);
+        description.setPosition(350f, 15f); //will need to change
         description.setTextColor(Color.WHITE);
         description.setTextSize(14f);
         lineChart.setDescription(description);
@@ -47,6 +47,8 @@ public class LineChartView extends AppCompatActivity {
         lineChart.setTouchEnabled(true);
         lineChart.getAxisRight().setDrawLabels(false);
         lineChart.getAxisRight().setEnabled(false);
+
+        //Get values from Firebase
 
         xValues = Arrays.asList("1", "2", "3", "4", "5", "6", "7");
 

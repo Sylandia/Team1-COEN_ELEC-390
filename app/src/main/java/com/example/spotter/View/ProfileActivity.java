@@ -14,7 +14,7 @@ import com.example.spotter.R;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    static final String Lobster = "Lobster_Log";
+    static final String Lobster = "Lobster_Profile";
 
     private TextView accHistoryText, squatHistoryText, deadliftHistoryText;
     private ListView listHistory;

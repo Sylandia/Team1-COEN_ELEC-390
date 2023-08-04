@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     public EditText usernameText, passwordText;
     public Button logInButton, signUpButton;
     private FirebaseAuth mAuth; // connect to firebase
-   // private FirebaseHelper fb;
+    public static final String  CHANNEL_1 = "CH1";
 
 
     @Override
@@ -42,8 +43,7 @@ public class MainActivity extends AppCompatActivity {
         logInButton = findViewById(R.id.logInButton);
         signUpButton = findViewById(R.id.signUpButton);
         mAuth = FirebaseAuth.getInstance(); // Initialize Firebase
-        //fb = new FirebaseHelper(MainActivity.this);
-        //fb.initFirebase();
+
 
 
         logInButton.setOnClickListener(new View.OnClickListener() { // login button
@@ -55,17 +55,6 @@ public class MainActivity extends AppCompatActivity {
                     email = String.valueOf(usernameText.getText());
                     password = String.valueOf(passwordText.getText());
 
-
-//                    if(fb.signIn(email, password)){
-//                        Log.d(Lobster, "Account: " + email + " login.");
-//                        goToLogin();
-//                        finish();
-//                    }
-//                    else{
-//
-//                        Log.d(Lobster, "Failed to sign in: " + email);
-//                        Toast.makeText(MainActivity.this, "Login failed.", Toast.LENGTH_SHORT).show();
-//                    }
 
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() { // from Firebase documentation for creating user https://firebase.google.com/docs/auth/android/start#java
@@ -99,12 +88,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart(){ // make sure no one is logged in.
         super.onStart();
-//        if(fb.signInCheck()){
-//            Log.d(Lobster, "Already Logged in.");
-//            goToLogin();
-//            finish();
-//        }
-//
+
         FirebaseUser currentUser = mAuth.getCurrentUser(); // check for sign in
         if(currentUser != null){
              goToLogin();
@@ -155,4 +139,5 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         startActivity(intent);
     }
+
 }

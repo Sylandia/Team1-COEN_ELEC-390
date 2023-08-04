@@ -1,25 +1,16 @@
 package com.example.spotter.Controller;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
-import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.example.spotter.View.LoginActivity;
-import com.example.spotter.View.MainActivity;
-import com.example.spotter.View.SignUpActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.ktx.FirebaseKt;
 /*
 *
 *

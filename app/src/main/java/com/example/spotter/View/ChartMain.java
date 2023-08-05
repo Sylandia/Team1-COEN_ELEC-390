@@ -195,7 +195,7 @@ public class ChartMain extends AppCompatActivity {
             }
         });
 
-        stopBtn.setOnClickListener(new View.OnClickListener() {
+        /*stopBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startTransfer = false;
@@ -205,7 +205,7 @@ public class ChartMain extends AppCompatActivity {
                 calibBtn.setVisibility(View.VISIBLE);
                 delay.setVisibility(View.INVISIBLE);
             }
-        });
+        });*/
 
     }
 

@@ -51,7 +51,7 @@ public class SquatActivity extends AppCompatActivity {
 
     private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text, relativeAngleX_text, relativeAngleY_text;
     private TextView clockTextView;
-    private Button chartButton, helpButton, startClockButton, resetClockButton;
+    private Button chartButton, helpButton, stopAcqBtn, startClockButton, resetClockButton;
     private DataBaseHelper db;
     private NotificationManagerCompat notificationManager;
     Context context = this;
@@ -87,6 +87,8 @@ public class SquatActivity extends AppCompatActivity {
         relativeAngleY_text = findViewById(R.id.squat_ra2);
         chartButton = findViewById(R.id.chartButton);
         helpButton = findViewById(R.id.helpButton);
+        stopAcqBtn = findViewById(R.id.stopAcqBtn);
+        chartButton.setVisibility(View.INVISIBLE);
         //Notification
         notificationManager =  NotificationManagerCompat.from(this);
 
@@ -129,6 +131,14 @@ public class SquatActivity extends AppCompatActivity {
                 Log.d(Lobster, "Go to charts");
                 Intent intent = new Intent(SquatActivity.this, ChartMain.class);
                 startActivity(intent);
+            }
+        });
+
+        stopAcqBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flagDatabase.child("stopRead").setValue(false);
+                chartButton.setVisibility(View.VISIBLE);
             }
         });
 

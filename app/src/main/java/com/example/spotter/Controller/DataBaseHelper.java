@@ -28,6 +28,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     public static final String COLUMN_RELATIVE_Y = "RELATIVE_Y";
     public static final String COLUMN_FLEX = "FLEX";
     public static final String COLUMN_ACTIVITY = "ACTIVITY";
+    public static final String ACQUISITION_ID = "ACQUISITION_ID";
 
 
     public DataBaseHelper(@Nullable Context context){super(context, "sensorValues.db", null, 1);}
@@ -36,9 +37,9 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
 
         //Table for IMU
-        db.execSQL("CREATE TABLE " + IMU_TABLE + " (" + COLUMN_ANGLE_1_X + " DOUBLE, " + COLUMN_ANGLE_1_Y + " DOUBLE, " + COLUMN_ANGLE_2_X + " DOUBLE, " + COLUMN_ANGLE_2_Y + " DOUBLE, " + COLUMN_RELATIVE_X + " DOUBLE, " + COLUMN_RELATIVE_Y + " DOUBLE, " + COLUMN_ACTIVITY + " TEXT ) ");
+        db.execSQL("CREATE TABLE " + IMU_TABLE + " ("+ ACQUISITION_ID + " INTEGER, " + COLUMN_ANGLE_1_X + " DOUBLE, " + COLUMN_ANGLE_1_Y + " DOUBLE, " + COLUMN_ANGLE_2_X + " DOUBLE, " + COLUMN_ANGLE_2_Y + " DOUBLE, " + COLUMN_RELATIVE_X + " DOUBLE, " + COLUMN_RELATIVE_Y + " DOUBLE, " + COLUMN_ACTIVITY + " TEXT ) ");
         //Table for Flex
-        db.execSQL("CREATE TABLE " + FLEX_TABLE + " (" + COLUMN_FLEX + " DOUBLE, " + COLUMN_ACTIVITY + " TEXT ) ");
+        db.execSQL("CREATE TABLE " + FLEX_TABLE + " (" + ACQUISITION_ID + " INTEGER, " + COLUMN_FLEX + " DOUBLE, " + COLUMN_ACTIVITY + " TEXT ) ");
 
     }
 
@@ -50,7 +51,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     }
 
     //Methods
-    public boolean insertSensors(FlexSensor flex, ImuSensor imu, String activity){ // for inserting both flex and imu sensors to database
+    public boolean insertSensors(FlexSensor flex, ImuSensor imu, String activity, int acq_id){ // for inserting both flex and imu sensors to database
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
@@ -65,6 +66,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             content.put(COLUMN_RELATIVE_X, imu.getRelative_x());
             content.put(COLUMN_RELATIVE_Y, imu.getRelative_y());
             content.put(COLUMN_ACTIVITY, activity);
+            content.put(ACQUISITION_ID, acq_id);
             db.insert(IMU_TABLE, null, content);
             Log.d(Lobster, "IMU Sensor: " + content.toString());
             content.clear();
@@ -72,6 +74,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             //Flex sensor table input
             content.put(COLUMN_FLEX, flex.getFlex());
             content.put(COLUMN_ACTIVITY, activity);
+            content.put(ACQUISITION_ID, acq_id);
             db.insert(FLEX_TABLE, null, content);
             Log.d(Lobster, "Flex Sensor: " + content.toString());
             content.clear();
@@ -85,7 +88,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
         return true;
     }
-    public boolean insertFlex(FlexSensor flex){ // for inserting only flex sensor to database
+    public boolean insertFlex(FlexSensor flex, String activity, int acq_id){ // for inserting only flex sensor to database
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
@@ -93,6 +96,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         try{
 
             content.put(COLUMN_FLEX, flex.getFlex());
+            content.put(COLUMN_ACTIVITY, activity);
+            content.put(ACQUISITION_ID, acq_id);
             db.insert(FLEX_TABLE, null, content);
             Log.d(Lobster, "Flex Sensor: " + content.toString());
             content.clear();
@@ -104,7 +109,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
         return true;
     }
-    public boolean insertImu(ImuSensor imu){// for inserting only imu sensors to database
+    public boolean insertImu(ImuSensor imu, String activity, int acq_id){// for inserting only imu sensors to database
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues content = new ContentValues();
@@ -117,6 +122,8 @@ public class DataBaseHelper extends SQLiteOpenHelper{
             content.put(COLUMN_ANGLE_2_Y, imu.getAngle2_y());
             content.put(COLUMN_RELATIVE_X, imu.getRelative_x());
             content.put(COLUMN_RELATIVE_Y, imu.getRelative_y());
+            content.put(COLUMN_ACTIVITY, activity);
+            content.put(ACQUISITION_ID, acq_id);
             db.insert(IMU_TABLE, null, content);
             Log.d(Lobster, "IMU Sensor: " + content.toString());
             content.clear();
@@ -181,6 +188,25 @@ public class DataBaseHelper extends SQLiteOpenHelper{
         cursor.close();
         db.close();
         return val;
+    }
+
+    public boolean isDatabaseEmpty() {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Check if IMU_TABLE is empty
+        Cursor imuCursor = db.rawQuery("SELECT * FROM " + IMU_TABLE, null);
+        boolean isImuTableEmpty = imuCursor.getCount() == 0;
+        imuCursor.close();
+
+        // Check if FLEX_TABLE is empty
+        Cursor flexCursor = db.rawQuery("SELECT * FROM " + FLEX_TABLE, null);
+        boolean isFlexTableEmpty = flexCursor.getCount() == 0;
+        flexCursor.close();
+
+        db.close();
+
+        // Return true if both tables are empty
+        return isImuTableEmpty && isFlexTableEmpty;
     }
 
 }

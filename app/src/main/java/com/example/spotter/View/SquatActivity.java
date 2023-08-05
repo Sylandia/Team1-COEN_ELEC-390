@@ -5,6 +5,7 @@ import static com.example.spotter.Controller.NotificationHelper.SQUAT;
 import android.app.Notification;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.spotter.Model.FlexSensor;
@@ -53,6 +55,8 @@ public class SquatActivity extends AppCompatActivity {
     private DataBaseHelper db;
     private NotificationManagerCompat notificationManager;
     Context context = this;
+    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferences.edit();
 
     DatabaseReference sensorDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
     DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
@@ -243,7 +247,24 @@ public class SquatActivity extends AppCompatActivity {
                 flex_text.setText(String.valueOf(flex.getFlex()));
                 relativeAngleX_text.setText(String.valueOf(imu.getRelative_x()));
                 relativeAngleY_text.setText(String.valueOf(imu.getRelative_y()));
-                db.insertSensors(flex, imu, "Squats");
+
+                boolean isDatabaseEmpty = db.isDatabaseEmpty();
+                if (isDatabaseEmpty) {
+                    // Database is empty
+                    editor.putInt("id", 1); // Replace "key" with your context identifier and "value" with the actual data to be passed.
+                    editor.apply();
+                    db.insertSensors(flex, imu, "Squats", 1);
+                } else {
+                    //Database is not empty
+                    int id = sharedPreferences.getInt("id", -1);
+                    if (id != -1) {
+                        db.insertSensors(flex, imu, "Squats", id);
+                    }
+                    else {
+                        Toast.makeText(context, "Database storage of sensor data failed", Toast.LENGTH_LONG).show();
+                    }
+                }
+
 
                 //Log.d(Lobster, "Value is: " + value);
 

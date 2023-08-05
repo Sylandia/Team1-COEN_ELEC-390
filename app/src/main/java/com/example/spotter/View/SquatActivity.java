@@ -282,6 +282,17 @@ public class SquatActivity extends AppCompatActivity {
                 DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
                 dataBaseHelper.insertSensors(flex, imu, "ChartMain");
 
+                squatNotification(imu, flex);
+
+                angle1x_text.setText(String.valueOf(imu.getAngle1_x()));
+                angle1y_text.setText(String.valueOf(imu.getAngle1_y()));
+                angle2x_text.setText(String.valueOf(imu.getAngle2_x()));
+                angle2y_text.setText(String.valueOf(imu.getAngle2_y()));
+                flex_text.setText(String.valueOf(flex.getFlex()));
+                relativeAngleX_text.setText(String.valueOf(imu.getRelative_x()));
+                relativeAngleY_text.setText(String.valueOf(imu.getRelative_y()));
+                db.insertSensors(flex, imu, "Squats");
+
             }
 
             @Override

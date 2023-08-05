@@ -2,18 +2,13 @@ package com.example.spotter.View;
 
 import static com.example.spotter.Controller.NotificationHelper.SQUAT;
 
-import android.Manifest;
 import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -28,10 +23,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
-import com.example.spotter.Controller.NotificationHelper;
 import com.example.spotter.Model.FlexSensor;
 import com.example.spotter.Model.ImuSensor;
-import com.google.firebase.auth.FirebaseAuth;
 import com.example.spotter.R;
 import com.example.spotter.Controller.DataBaseHelper;
 import com.google.firebase.database.DataSnapshot;
@@ -59,8 +52,10 @@ public class SquatActivity extends AppCompatActivity {
     private Button chartButton, helpButton, startClockButton, resetClockButton;
     private DataBaseHelper db;
     private NotificationManagerCompat notificationManager;
+    private Context context = this;
 
-    DatabaseReference refDatabase;
+    DatabaseReference sensorDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
+    DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
 
     private View.OnClickListener helpActivity = new View.OnClickListener() {
         @Override
@@ -230,9 +225,8 @@ public class SquatActivity extends AppCompatActivity {
     }
 
     private void UpdateRealTimeData() {
-        refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
 
-        refDatabase.addValueEventListener(new ValueEventListener() {
+        sensorDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -240,7 +234,7 @@ public class SquatActivity extends AppCompatActivity {
                 FlexSensor flex = new FlexSensor(value.get("Flex"));
                 ImuSensor imu = new ImuSensor(value.get("Angle1x"), value.get("Angle1y"), value.get("Angle2x"), value.get("Angle2y"));
 
-                squatNotification(imu, flex);
+                /*squatNotification(imu, flex);
 
                 angle1x_text.setText(String.valueOf(imu.getAngle1_x()));
                 angle1y_text.setText(String.valueOf(imu.getAngle1_y()));
@@ -249,7 +243,7 @@ public class SquatActivity extends AppCompatActivity {
                 flex_text.setText(String.valueOf(flex.getFlex()));
                 relativeAngleX_text.setText(String.valueOf(imu.getRelative_x()));
                 relativeAngleY_text.setText(String.valueOf(imu.getRelative_y()));
-                db.insertSensors(flex, imu, "Squats");
+                db.insertSensors(flex, imu, "Squats");*/
 
                 //Log.d(Lobster, "Value is: " + value);
 
@@ -275,6 +269,26 @@ public class SquatActivity extends AppCompatActivity {
         }else{
             //do nothing
         }
+    }
+
+    private void sendSensorDataToDatabase() {
+        sensorDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Map<String,Double> value = (Map<String, Double>) snapshot.getValue(true);
+                FlexSensor flex = new FlexSensor(value.get("Flex"));
+                ImuSensor imu = new ImuSensor(value.get("Angle1x"), value.get("Angle1y"), value.get("Angle2x"), value.get("Angle2y"));
+
+                DataBaseHelper dataBaseHelper = new DataBaseHelper(context);
+                dataBaseHelper.insertSensors(flex, imu, "ChartMain");
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(Lobster,"Failed to retrieve sensor value");
+            }
+        });
     }
 
 }

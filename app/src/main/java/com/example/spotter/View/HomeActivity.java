@@ -5,7 +5,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -21,7 +23,7 @@ public class HomeActivity extends AppCompatActivity {
 
     static final String Lobster = "Lobster_Home";
 
-    private Button squatsButton, deadliftsButton, warmupButton, curlsButton, lateralButton, logOut;
+    private Button squatsButton, deadliftsButton, warmupButton, logOut;
 
     private FirebaseUser user;
 
@@ -36,7 +38,11 @@ public class HomeActivity extends AppCompatActivity {
     private View.OnClickListener squatsActivity = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getBaseContext(), SquatActivity.class);
+            Intent intent = new Intent(getBaseContext(), ChartMain.class);
+            SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("callingActivity", "squats"); // Replace "key" with your context identifier and "value" with the actual data to be passed.
+            editor.apply();
             startActivity(intent);
         }
     };
@@ -44,7 +50,11 @@ public class HomeActivity extends AppCompatActivity {
     private View.OnClickListener deadliftsActivity = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Intent intent = new Intent(getBaseContext(), DeadliftsActivity.class);
+            Intent intent = new Intent(getBaseContext(), ChartMain.class);
+            SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("callingActivity", "deadlifts"); // Replace "key" with your context identifier and "value" with the actual data to be passed.
+            editor.apply();
             startActivity(intent);
         }
 
@@ -145,5 +155,7 @@ public class HomeActivity extends AppCompatActivity {
         }
         return(super.onOptionsItemSelected(item));
     }
+
+
 
 }

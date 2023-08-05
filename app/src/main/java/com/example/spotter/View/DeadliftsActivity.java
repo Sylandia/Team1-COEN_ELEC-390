@@ -4,7 +4,9 @@ import static com.example.spotter.Controller.NotificationHelper.DEADLIFT;
 import static com.example.spotter.Controller.NotificationHelper.SQUAT;
 
 import android.app.Notification;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.spotter.Controller.DataBaseHelper;
 import com.example.spotter.Model.FlexSensor;
@@ -44,10 +47,16 @@ public class DeadliftsActivity extends AppCompatActivity {
     static final String Lobster = "Lobster_Deadlift";
 
     private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text, relativeAngleX_text, relativeAngleY_text, clockTextView;
-    private Button helpButton, chartButton, startClockButton, resetClockButton;
+    private Button helpButton, chartButton, stopAcqBtn, startClockButton, resetClockButton;
     DatabaseReference refDatabase, sensor;
     private DataBaseHelper db;
     private NotificationManagerCompat notificationManager;
+    Context context = this;
+    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+
+    DatabaseReference sensorDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
+    DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
 
     private View.OnClickListener helpActivity = new View.OnClickListener() {
         @Override
@@ -75,6 +84,7 @@ public class DeadliftsActivity extends AppCompatActivity {
         relativeAngleY_text = findViewById(R.id.deadlift_ra2);
         chartButton = findViewById(R.id.chartButton);
         helpButton = findViewById(R.id.helpButton);
+        stopAcqBtn = findViewById(R.id.stopAcqBtn);
         //Notification
         notificationManager =  NotificationManagerCompat.from(this);
 
@@ -108,7 +118,7 @@ public class DeadliftsActivity extends AppCompatActivity {
 
         helpButton.setOnClickListener(helpActivity);
 
-        getSupportActionBar().setTitle("Squats");
+        getSupportActionBar().setTitle("Deadlifts");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         chartButton.setOnClickListener(new View.OnClickListener() {
@@ -119,6 +129,22 @@ public class DeadliftsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        stopAcqBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                flagDatabase.child("stopRead").setValue(false);
+                chartButton.setVisibility(View.VISIBLE);
+                int id = sharedPreferences.getInt("id", -1);
+                if (id != -1) {
+                    id++; //increment id for next acq
+                    editor.putInt("id", id);
+                } else {
+                    Log.w(Lobster, "Failed to increment id value.");
+                }
+            }
+        });
+
         UpdateRealTimeData();
 //        refDatabase.addValueEventListener(new ValueEventListener() { // to update the values from realtime database
 //            @Override
@@ -134,63 +160,6 @@ public class DeadliftsActivity extends AppCompatActivity {
 //        });
     }
 
-    private void startTimer() {
-        timerRunning = true;
-        countDownTimer = new CountDownTimer(30000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                counter++;
-                clockTextView.setText(String.valueOf(counter));
-            }
-
-            public void onFinish() {
-                clockTextView.setText("Stop");
-                stopTimer();
-            }
-        }.start();
-    }
-
-    private void pauseTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        timerPaused = true;
-    }
-
-    private void resumeTimer() {
-        timerRunning = true;
-        timerPaused = false;
-        countDownTimer = new CountDownTimer((30 - counter) * 1000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                counter++;
-                clockTextView.setText(String.valueOf(counter));
-            }
-
-            public void onFinish() {
-                clockTextView.setText("Stop");
-                stopTimer();
-            }
-        }.start();
-    }
-
-    private void stopTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        timerRunning = false;
-        timerPaused = false;
-        counter = 0;
-        clockTextView.setText(String.valueOf(counter));
-    }
-
-    private void resetTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        timerRunning = false;
-        timerPaused = false;
-        counter = 0;
-        clockTextView.setText(String.valueOf(counter));
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -226,9 +195,24 @@ public class DeadliftsActivity extends AppCompatActivity {
                 flex_text.setText(String.valueOf(flex.getFlex()));
                 relativeAngleX_text.setText(String.valueOf(imu.getRelative_x()));
                 relativeAngleY_text.setText(String.valueOf(imu.getRelative_y()));
-                db.insertSensors(flex, imu, "Deadlifts");
+                boolean isDatabaseEmpty = db.isDatabaseEmpty();
+                if (isDatabaseEmpty) {
+                    // Database is empty
+                    editor.putInt("id", 1); // Replace "key" with your context identifier and "value" with the actual data to be passed.
+                    editor.apply();
+                    db.insertSensors(flex, imu, "Deadlifts", 1);
+                } else {
+                    //Database is not empty
+                    int id = sharedPreferences.getInt("id", -1);
+                    if (id != -1) {
+                        db.insertSensors(flex, imu, "Deadlifts", id);
+                    }
+                    else {
+                        Toast.makeText(context, "Database storage of sensor data failed", Toast.LENGTH_LONG).show();
+                    }
+                }
 
-                Log.d(Lobster, "Value is: " + value);
+                //Log.d(Lobster, "Value is: " + value);
 
             }
 

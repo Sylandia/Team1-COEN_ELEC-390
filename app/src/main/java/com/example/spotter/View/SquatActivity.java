@@ -139,6 +139,13 @@ public class SquatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 flagDatabase.child("stopRead").setValue(false);
                 chartButton.setVisibility(View.VISIBLE);
+                int id = sharedPreferences.getInt("id", -1);
+                if (id != -1) {
+                    id++; //increment id for next acq
+                    editor.putInt("id", id);
+                } else {
+                    Log.w(Lobster, "Failed to increment id value.");
+                }
             }
         });
 
@@ -163,64 +170,6 @@ public class SquatActivity extends AppCompatActivity {
     protected void onPostResume() {
         super.onPostResume();
         UpdateRealTimeData();
-    }
-
-    private void startTimer() {
-        timerRunning = true;
-        countDownTimer = new CountDownTimer(30000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                counter++;
-                clockTextView.setText(String.valueOf(counter));
-            }
-
-            public void onFinish() {
-                clockTextView.setText("Stop");
-                stopTimer();
-            }
-        }.start();
-    }
-
-    private void pauseTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        timerPaused = true;
-    }
-
-    private void resumeTimer() {
-        timerRunning = true;
-        timerPaused = false;
-        countDownTimer = new CountDownTimer((30 - counter) * 1000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                counter++;
-                clockTextView.setText(String.valueOf(counter));
-            }
-
-            public void onFinish() {
-                clockTextView.setText("Stop");
-                stopTimer();
-            }
-        }.start();
-    }
-
-    private void stopTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        timerRunning = false;
-        timerPaused = false;
-        counter = 0;
-        clockTextView.setText(String.valueOf(counter));
-    }
-
-    private void resetTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        timerRunning = false;
-        timerPaused = false;
-        counter = 0;
-        clockTextView.setText(String.valueOf(counter));
     }
 
     @Override

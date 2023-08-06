@@ -38,6 +38,8 @@ public class ChartMain extends AppCompatActivity {
 
     static final String Lobster = "Lobster_ChartMain";
     DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
+    DatabaseReference calibRef = flagDatabase.child("calib");
+    DatabaseReference startRef = flagDatabase.child("startRead");
     boolean startTransfer = false;
     boolean stopTransfer = false;
     boolean calib = false;
@@ -83,46 +85,49 @@ public class ChartMain extends AppCompatActivity {
                 flagDatabase.child("calib").setValue(calib);
                 flagDatabase.child("stopRead").setValue(stopTransfer);
                 flagDatabase.child("startRead").setValue(startTransfer);
-                DatabaseReference calibRef = flagDatabase.child("calib");
 
                 // Remove the previous callback if exists to avoid multiple callbacks
                 if (calibrationTimeoutRunnable != null) {
                     handler.removeCallbacks(calibrationTimeoutRunnable);
                 }
 
-                calibrationTimeoutRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        // This code will be executed after 15 seconds
-                        Toast.makeText(context, "Calibration failed.", Toast.LENGTH_LONG).show();
-                        calibBtn.setVisibility(View.VISIBLE);
-                        startBtn.setVisibility(View.INVISIBLE);
-                        delay.setVisibility(View.INVISIBLE);
-                    }
-                };
-
                 calibRef.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean calibValue = snapshot.getValue(boolean.class);
-                        if (!calibValue) {
-                            // Reset the previous callback
-                            handler.removeCallbacks(calibrationTimeoutRunnable);
-
-                            startBtn.setVisibility(View.VISIBLE);
-                            calibBtn.setVisibility(View.INVISIBLE);
-                            delay.setVisibility(View.VISIBLE);
-
-                            // Start the 15-second timer again
-                            handler.postDelayed(calibrationTimeoutRunnable, CALIBRATION_TIMEOUT);
-                        }
+                        calib = snapshot.getValue(boolean.class);
                     }
-
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
-                        Log.d(Lobster, "Calibration Unsuccessful");
+                        Log.d(Lobster, "Failed to get calib from DB");
                     }
                 });
+
+                calibrationTimeoutRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        // This code will be executed after 15 seconds - Handshake unsuccessful
+                        if (calib) {
+                            Toast.makeText(context, "Calibration failed.", Toast.LENGTH_LONG).show();
+                            calibBtn.setVisibility(View.VISIBLE);
+                            startBtn.setVisibility(View.INVISIBLE);
+                            delay.setVisibility(View.INVISIBLE);
+                            calib = false;
+                            startTransfer = false;
+                        }
+                    }
+                };
+
+                if (!calib) {
+                    //Handshake successful
+                    handler.removeCallbacks(calibrationTimeoutRunnable);
+
+                    startBtn.setVisibility(View.VISIBLE);
+                    calibBtn.setVisibility(View.INVISIBLE);
+                    delay.setVisibility(View.VISIBLE);
+
+                    // Start the 15-second timer again
+                    handler.postDelayed(calibrationTimeoutRunnable, CALIBRATION_TIMEOUT);
+                }
 
                 // Start the 15-second timer for the initial calibration check
                 handler.postDelayed(calibrationTimeoutRunnable, CALIBRATION_TIMEOUT);
@@ -156,13 +161,23 @@ public class ChartMain extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     // This code will be executed after 15 seconds
-                                    Toast.makeText(context, "Start failed.", Toast.LENGTH_LONG).show();
-                                    startBtn.setVisibility(View.VISIBLE);
-                                    stopBtn.setVisibility(View.INVISIBLE);
+                                    startRef.addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            startTransfer = snapshot.getValue(boolean.class);
+                                        }
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            Log.d(Lobster, "Failed to get startRead from DB");
+                                        }
+                                    });
+                                    if (startTransfer) {
+                                        Toast.makeText(context, "Start failed.", Toast.LENGTH_LONG).show();
+                                        startBtn.setVisibility(View.VISIBLE);
+                                        stopBtn.setVisibility(View.INVISIBLE);
+                                    }
                                 }
                             };
-
-                            DatabaseReference startRef = flagDatabase.child("startRead");
                             startRef.addValueEventListener(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {

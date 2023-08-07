@@ -116,26 +116,28 @@ public class ChartMain extends AppCompatActivity {
                             }
 
                             public void onFinish() {
-                                startTransfer = true;
-                                stopTransfer = false;
-                                flagDatabase.child("startRead").setValue(startTransfer);
+                                if (startButtonPressed) {
+                                    startTransfer = true;
+                                    stopTransfer = false;
+                                    flagDatabase.child("startRead").setValue(startTransfer);
 
-                                // Remove the previous callback if exists to avoid multiple callbacks
-                                if (startTimeoutRunnable != null) {
-                                    handler.removeCallbacks(startTimeoutRunnable);
-                                }
-
-                                startTimeoutRunnable = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        // This code will be executed after 15 seconds
-                                        startPollingStartValue();
-                                        if (startTransfer) {
-                                            Toast.makeText(context, "Start failed.", Toast.LENGTH_LONG).show();
-                                            startBtn.setVisibility(View.VISIBLE);
-                                        }
+                                    // Remove the previous callback if exists to avoid multiple callbacks
+                                    if (startTimeoutRunnable != null) {
+                                        handler.removeCallbacks(startTimeoutRunnable);
                                     }
-                                };
+
+                                    startTimeoutRunnable = new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            // This code will be executed after 15 seconds
+                                            startPollingStartValue();
+                                            if (startTransfer) {
+                                                Toast.makeText(context, "Start failed.", Toast.LENGTH_LONG).show();
+                                                startBtn.setVisibility(View.VISIBLE);
+                                            }
+                                        }
+                                    };
+                                }
                                 startRef.addValueEventListener(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {

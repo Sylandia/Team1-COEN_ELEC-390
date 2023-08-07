@@ -97,7 +97,7 @@ public class SquatActivity extends AppCompatActivity {
         editor = sharedPreferences.edit();
 
         //Delete Database if needed
-        db.DeleteDatabase(this);
+        //db.DeleteDatabase(this);
 
 
         //startClockButton = findViewById(R.id.startClockButton);

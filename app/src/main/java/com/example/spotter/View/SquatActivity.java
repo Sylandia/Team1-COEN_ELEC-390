@@ -57,6 +57,7 @@ public class SquatActivity extends AppCompatActivity {
     Context context = this;
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
+    boolean stopAcq;
 
     DatabaseReference sensorDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
     DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
@@ -144,23 +145,11 @@ public class SquatActivity extends AppCompatActivity {
         stopAcqBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flagDatabase.child("stopRead").setValue(false);
-                chartButton.setVisibility(View.VISIBLE);
-                int id = sharedPreferences.getInt("id", -1);
-                if (id != -1) {
-                    id++; //increment id for next acq
-                    editor.putInt("id", id);
-                } else {
-                    Log.w(Lobster, "Failed to increment id value.");
-                }
+                stopAcqn();
+                stopAcq = true;
+                stopAcqBtn.setVisibility(View.INVISIBLE);
             }
         });
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
 
     }
 
@@ -169,6 +158,12 @@ public class SquatActivity extends AppCompatActivity {
         super.onResume();
         //UpdateRealTimeData();
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopAcqn();
     }
 
     @Override
@@ -186,10 +181,6 @@ public class SquatActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public double CalculateRelativeAngle(double imu1, double imu2) {
-        return (imu1 - imu2);
     }
 
     private void UpdateRealTimeData() {
@@ -253,6 +244,21 @@ public class SquatActivity extends AppCompatActivity {
             Log.e(Lobster, "Notification Created");
         }else{
             //do nothing
+        }
+    }
+
+    private void stopAcqn(){
+        flagDatabase.child("stopRead").setValue(true);
+        chartButton.setVisibility(View.VISIBLE);
+        if (!stopAcq) {
+            int id = sharedPreferences.getInt("id", -1);
+            if(id != -1) {
+                id++; //increment id for next acq
+                editor.putInt("id", id);
+                editor.apply();
+            } else {
+                Log.w(Lobster, "Failed to increment id value.");
+            }
         }
     }
 

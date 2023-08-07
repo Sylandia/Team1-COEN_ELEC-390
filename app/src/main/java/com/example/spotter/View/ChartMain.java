@@ -51,6 +51,8 @@ public class ChartMain extends AppCompatActivity {
     private Runnable calibrationTimeoutRunnable;
     private Runnable startTimeoutRunnable;
     private static final int CALIBRATION_TIMEOUT = 15000; // 15 seconds in milliseconds
+    private ValueEventListener calibValueEventListener;
+    private ValueEventListener startValueEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +140,7 @@ public class ChartMain extends AppCompatActivity {
                                         }
                                     };
                                 }
-                                startRef.addValueEventListener(new ValueEventListener() {
+                                startRef.addValueEventListener(startValueEventListener = new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                         boolean startValue = snapshot.getValue(boolean.class);
@@ -205,6 +207,8 @@ public class ChartMain extends AppCompatActivity {
         });
     }*/
 
+
+
     public void startAcquisition (){
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         String contextData = sharedPreferences.getString("callingActivity", "default_value"); // Replace "key" with the context identifier used while sending and provide a default value.
@@ -222,7 +226,7 @@ public class ChartMain extends AppCompatActivity {
 
     // Function to start polling the database for changes in calib value
     private void startPollingCalibValue() {
-        calibRef.addValueEventListener(new ValueEventListener() {
+        calibRef.addValueEventListener(calibValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 calib = snapshot.getValue(boolean.class);
@@ -256,7 +260,7 @@ public class ChartMain extends AppCompatActivity {
     }
 
     private void startPollingStartValue() {
-        startRef.addValueEventListener(new ValueEventListener() {
+        startRef.addValueEventListener(startValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 startTransfer = snapshot.getValue(boolean.class);
@@ -267,6 +271,15 @@ public class ChartMain extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // Remove the listeners to avoid leaks and unwanted triggers
+        calibRef.removeEventListener(calibValueEventListener);
+        startRef.removeEventListener(startValueEventListener);
+        handler.removeCallbacksAndMessages(null);
     }
 
 

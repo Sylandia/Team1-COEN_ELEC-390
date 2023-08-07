@@ -156,8 +156,6 @@ public class SquatActivity extends AppCompatActivity {
             }
         });
 
-        UpdateRealTimeData();
-
     }
 
     @Override
@@ -169,7 +167,7 @@ public class SquatActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        UpdateRealTimeData();
+        //UpdateRealTimeData();
 
     }
 

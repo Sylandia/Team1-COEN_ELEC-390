@@ -55,8 +55,8 @@ public class SquatActivity extends AppCompatActivity {
     private DataBaseHelper db;
     private NotificationManagerCompat notificationManager;
     Context context = this;
-    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-    SharedPreferences.Editor editor = sharedPreferences.edit();
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     DatabaseReference sensorDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
     DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
@@ -74,6 +74,7 @@ public class SquatActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_squats);
@@ -91,6 +92,12 @@ public class SquatActivity extends AppCompatActivity {
         chartButton.setVisibility(View.INVISIBLE);
         //Notification
         notificationManager =  NotificationManagerCompat.from(this);
+
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        //Delete Database if needed
+        db.DeleteDatabase(this);
 
 
         //startClockButton = findViewById(R.id.startClockButton);

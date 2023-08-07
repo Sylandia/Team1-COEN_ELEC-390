@@ -30,11 +30,15 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     public static final String COLUMN_ACTIVITY = "ACTIVITY";
     public static final String ACQUISITION_ID = "ACQUISITION_ID";
 
+    public DataBaseHelper(@Nullable Context context){
+        super(context, "sensorValues.db", null, 1);}
 
-    public DataBaseHelper(@Nullable Context context){super(context, "sensorValues.db", null, 1);}
-
+    public void DeleteDatabase(Context context){
+        context.deleteDatabase("sensorValues.db");
+    }
     @Override
     public void onCreate(SQLiteDatabase db) {
+
 
         //Table for IMU
         db.execSQL("CREATE TABLE " + IMU_TABLE + " ("+ ACQUISITION_ID + " INTEGER, " + COLUMN_ANGLE_1_X + " DOUBLE, " + COLUMN_ANGLE_1_Y + " DOUBLE, " + COLUMN_ANGLE_2_X + " DOUBLE, " + COLUMN_ANGLE_2_Y + " DOUBLE, " + COLUMN_RELATIVE_X + " DOUBLE, " + COLUMN_RELATIVE_Y + " DOUBLE, " + COLUMN_ACTIVITY + " TEXT ) ");
@@ -46,7 +50,12 @@ public class DataBaseHelper extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        //Does nothing
+        // Drop the existing tables if they exist
+        db.execSQL("DROP TABLE IF EXISTS " + IMU_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + FLEX_TABLE);
+
+        // Create new tables with updated schema
+        onCreate(db);
 
     }
 
@@ -195,11 +204,13 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
         // Check if IMU_TABLE is empty
         Cursor imuCursor = db.rawQuery("SELECT * FROM " + IMU_TABLE, null);
+        int nb = imuCursor.getCount();
         boolean isImuTableEmpty = imuCursor.getCount() == 0;
         imuCursor.close();
 
         // Check if FLEX_TABLE is empty
         Cursor flexCursor = db.rawQuery("SELECT * FROM " + FLEX_TABLE, null);
+        int nb2 = flexCursor.getCount();
         boolean isFlexTableEmpty = flexCursor.getCount() == 0;
         flexCursor.close();
 

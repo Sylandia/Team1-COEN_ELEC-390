@@ -28,5 +28,8 @@ public class WarmupActivity extends AppCompatActivity {
         webViewSquats.loadData(videoS,"text/html", "utf-8");
         webViewSquats.getSettings().setJavaScriptEnabled(true);
         webViewSquats.setWebChromeClient(new WebChromeClient());
+
+        getSupportActionBar().setTitle("Warm ups");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

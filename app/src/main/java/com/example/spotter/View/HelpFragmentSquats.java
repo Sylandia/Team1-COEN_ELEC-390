@@ -5,13 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.DialogFragment;
 import com.example.spotter.R;
 
 public class HelpFragmentSquats extends DialogFragment {
-    private TextView instructionText, textView, ContactText;
+    private TextView instructionText, textView, ContactText, figure1, figure2;
+
+    private ImageView kneeImageView, backImageView;
 
     private Button returnButton;
 
@@ -29,6 +32,14 @@ public class HelpFragmentSquats extends DialogFragment {
         instructionText = view.findViewById(R.id.instructionText);
         textView = view.findViewById(R.id.textView);
         ContactText = view.findViewById(R.id.ContactText);
+        figure1 = view.findViewById(R.id.figure1);
+        figure2 = view.findViewById(R.id.figure2);
+        kneeImageView = view.findViewById(R.id.kneeImageView);
+        backImageView = view.findViewById(R.id.backImageView);
+
+
+        kneeImageView.setImageResource(R.drawable.sensorknee);
+        backImageView.setImageResource(R.drawable.sensorback);
 
         view.findViewById(R.id.returnButton).setOnClickListener(returnActivity);
 

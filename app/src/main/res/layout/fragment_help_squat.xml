@@ -4,15 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/frameLayout"
-    android:layout_width="match_parent"
+    android:layout_width="450dp"
     android:layout_height="wrap_content"
     tools:context=".View.HelpFragmentSquats">
 
     <TextView
         android:id="@+id/instructionText"
-        android:layout_width="wrap_content"
+        android:layout_width="450dp"
         android:layout_height="wrap_content"
         android:text="Instructions"
+        android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,37 +24,93 @@
 
     <TextView
         android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="450dp"
         android:layout_height="wrap_content"
-        android:text="In order for the application to work properly:\n\nSet up the flex sensor on your lower back.\nSet up the IMU sensor on your knees.\nTurn on the sensors.\nSelect which exercise you are doing.\nStart exercising! (Use the chart button to see your results in a graph)."
-        android:textSize="15sp"
+        android:textAlignment="center"
+        android:text="In order for the application to work properly:\n\nSet up the flex sensor on your lower back as shown in Figure 1.\nSet up the IMU sensor on your knees as shown in Figure 2.\nTurn on the sensors.\nStart exercising! (Use the chart button to see your results in a graph)."
+        android:textSize="12sp"
         app:layout_constraintTop_toBottomOf="@+id/instructionText"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="16dp"
         />
 
+    <ImageView
+        android:id="@+id/kneeImageView"
+        android:layout_width="203dp"
+        android:layout_height="276dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/sensorknee"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.12"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.573" />
+
+    <ImageView
+        android:id="@+id/backImageView"
+        android:layout_width="161dp"
+        android:layout_height="250dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/sensorback"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.962"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.564" />
+
     <TextView
         android:id="@+id/ContactText"
-        android:layout_width="wrap_content"
+        android:layout_width="450dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="320dp"
+        android:padding="16dp"
+        android:textAlignment="center"
         android:text="Contact us:\n(1800) 776-8837\nEmail: spotter@hotmail.com"
         android:textSize="15sp"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
-        />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
         android:id="@+id/returnButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Return"
-        app:layout_constraintTop_toBottomOf="@+id/ContactText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="4dp"
         android:padding="16dp"
-        />
+        android:text="Return"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ContactText" />
+
+    <TextView
+        android:id="@+id/figure2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Figure 2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.266"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.768" />
+
+    <TextView
+        android:id="@+id/figure1"
+        android:layout_width="72dp"
+        android:layout_height="17dp"
+        android:text="Figure 1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.852"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.766" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

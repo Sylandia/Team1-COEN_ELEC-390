@@ -5,6 +5,7 @@ import static com.example.spotter.Controller.NotificationHelper.SQUAT;
 
 import android.app.Notification;
 import android.content.Intent;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -16,9 +17,11 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.spotter.Controller.DataBaseHelper;
@@ -54,8 +57,8 @@ public class DeadliftsActivity extends AppCompatActivity {
         public void onClick(View v) {
             Log.d(Lobster, "Go to Help");
             FragmentManager fm = getSupportFragmentManager();
-            HelpFragmentSquats hp = new HelpFragmentSquats();
-            hp.show(fm, "fragment_help_squat");
+            HelpFragmentDeadlifts hp = new HelpFragmentDeadlifts();
+            hp.show(fm, "fragment_help_deadlift");
         }
     };
 
@@ -108,7 +111,7 @@ public class DeadliftsActivity extends AppCompatActivity {
 
         helpButton.setOnClickListener(helpActivity);
 
-        getSupportActionBar().setTitle("Squats");
+        getSupportActionBar().setTitle("Deadlifts");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         chartButton.setOnClickListener(new View.OnClickListener() {
@@ -133,7 +136,7 @@ public class DeadliftsActivity extends AppCompatActivity {
 //            }
 //        });
     }
-
+    /*
     private void startTimer() {
         timerRunning = true;
         countDownTimer = new CountDownTimer(30000, 1000) {
@@ -148,7 +151,7 @@ public class DeadliftsActivity extends AppCompatActivity {
             }
         }.start();
     }
-
+    /*
     private void pauseTimer() {
         if (countDownTimer != null) {
             countDownTimer.cancel();
@@ -192,6 +195,7 @@ public class DeadliftsActivity extends AppCompatActivity {
         clockTextView.setText(String.valueOf(counter));
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -201,7 +205,7 @@ public class DeadliftsActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+*/
     public double CalculateRelativeAngle(double imu1, double imu2){
         return (imu1-imu2);
     }
@@ -254,6 +258,29 @@ public class DeadliftsActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.clock_bar, menu);
+        return true;
+    }
 
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_clock_activity) {
+            Log.d(Lobster, "Go to Clock Dialog Fragment");
+            FragmentManager fm = getSupportFragmentManager();
+            ClockFragment hp = new ClockFragment();
+            hp.show(fm, "clock_fragment");
+            return true;
+        }
+        return(super.onOptionsItemSelected(item));
+    }
 }
 
+//Log.d(Lobster, "Go to Help");
+//            FragmentManager fm = getSupportFragmentManager();
+//            HelpFragmentDeadlifts hp = new HelpFragmentDeadlifts();
+//            hp.show(fm, "fragment_help_deadlift");

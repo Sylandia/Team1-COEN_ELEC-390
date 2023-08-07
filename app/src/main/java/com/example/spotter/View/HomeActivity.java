@@ -96,13 +96,13 @@ public class HomeActivity extends AppCompatActivity {
         squatsButton = findViewById(R.id.squatsButton);
         deadliftsButton = findViewById(R.id.deadliftsButton);
         warmupButton = findViewById(R.id.warmupButton);  //Vinnie
-        logOut = findViewById(R.id.logOutbutton);
+        //logOut = findViewById(R.id.logOutbutton);
 
         squatsButton.setOnClickListener(squatsActivity);
         deadliftsButton.setOnClickListener(deadliftsActivity);
         warmupButton.setOnClickListener(warmupActivity); //Vinnie
 
-
+/*
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +112,7 @@ public class HomeActivity extends AppCompatActivity {
                 finish();
             }
         });
-
+*/
     }
 
     @Override

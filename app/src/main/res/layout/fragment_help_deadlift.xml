@@ -6,7 +6,7 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".View.HelpFragmentSquats">
+    tools:context=".View.HelpFragmentDeadlifts">
 
     <TextView
         android:id="@+id/instructionText"
@@ -25,7 +25,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="In order for the application to work properly:\n\nSet up the flex sensor on your lower back.\nSet up the IMU sensor on your knees.\nTurn on the sensors.\nSelect which exercise you are doing.\nStart exercising! (Use the chart button to see your results in a graph)."
+        android:text="In order for the application to work properly:\n\nSet up the flex sensor on your lower back.\nSet up the IMU sensor on your knees as shown in the picture.\nTurn on the sensors.\nStart exercising! (Use the chart button to see your results in a graph)."
         android:textSize="15sp"
         app:layout_constraintTop_toBottomOf="@+id/instructionText"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,27 +33,44 @@
         android:padding="16dp"
         />
 
+
+    <ImageView
+        android:id="@+id/deadliftImage"
+        android:layout_width="392dp"
+        android:layout_height="274dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/deadlift"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.473"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.568" />
+
     <TextView
         android:id="@+id/ContactText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="284dp"
+        android:padding="16dp"
         android:text="Contact us:\n(1800) 776-8837\nEmail: spotter@hotmail.com"
         android:textSize="15sp"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:padding="16dp"
-        />
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
 
     <Button
         android:id="@+id/returnButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Return"
-        app:layout_constraintTop_toBottomOf="@+id/ContactText"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
         android:padding="16dp"
-        />
+        android:text="Return"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ContactText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

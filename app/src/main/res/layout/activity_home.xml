@@ -79,6 +79,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.607" />
 
+    <!--
     <Button
         android:id="@+id/logOutbutton"
         android:layout_width="140dp"
@@ -90,5 +91,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.023" />
-
+     -->
 </androidx.constraintlayout.widget.ConstraintLayout>

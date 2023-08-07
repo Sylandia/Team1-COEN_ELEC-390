@@ -17,8 +17,11 @@
         android:theme="@style/Theme.AppCompat"
         tools:targetApi="31">
         <activity
+            android:name=".View.ClockFragment"
+            android:parentActivityName=".View.DeadliftsActivity" />
+        <activity
             android:name=".View.WarmupActivity"
-            android:exported="false" />
+            android:parentActivityName=".View.MainActivity" />
         <activity
             android:name=".View.DeadliftHistory"
             android:parentActivityName=".View.AccountActivity" />
@@ -51,10 +54,10 @@
             android:exported="false" />
         <activity
             android:name=".View.SquatActivity"
-            android:exported="false" />
+            android:parentActivityName=".View.MainActivity" />
         <activity
             android:name=".View.DeadliftsActivity"
-            android:exported="false" /> <!-- <activity -->
+            android:parentActivityName=".View.MainActivity" />
         <activity
             android:name=".View.LineChartView"
             android:exported="false" />

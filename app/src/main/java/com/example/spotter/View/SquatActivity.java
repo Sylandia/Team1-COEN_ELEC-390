@@ -22,6 +22,7 @@ import androidx.fragment.app.FragmentManager;
 
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -214,6 +215,7 @@ public class SquatActivity extends AppCompatActivity {
         clockTextView.setText(String.valueOf(counter));
     }
 
+    /*
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -224,6 +226,8 @@ public class SquatActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+     */
 
     public double CalculateRelativeAngle(double imu1, double imu2) {
         return (imu1 - imu2);
@@ -275,6 +279,27 @@ public class SquatActivity extends AppCompatActivity {
         }else{
             //do nothing
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.clock_bar, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_clock_activity) {
+            Log.d(Lobster, "Go to Clock Dialog Fragment");
+            FragmentManager fm = getSupportFragmentManager();
+            ClockFragment hp = new ClockFragment();
+            hp.show(fm, "clock_fragment");
+            return true;
+        }
+        return(super.onOptionsItemSelected(item));
     }
 
 }

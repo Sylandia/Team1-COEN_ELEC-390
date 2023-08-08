@@ -2,6 +2,7 @@ package com.example.spotter.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
 import android.os.Build;
@@ -11,6 +12,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.spotter.Controller.FirebaseHelper;
@@ -29,6 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth; // connect to firebase
     public static final String  CHANNEL_1 = "CH1";
 
+    private TextView aboutUsText;
+    private ImageButton aboutUsBtn;
+
+   private void aboutUs() {
+       Log.d(Lobster, "Going to About us");
+       Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+       startActivity(intent);
+   }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
         passwordText = findViewById(R.id.passwordTextM);
         logInButton = findViewById(R.id.logInButton);
         signUpButton = findViewById(R.id.signUpButton);
+        aboutUsText = findViewById(R.id.aboutUsText);
+        aboutUsBtn = findViewById(R.id.aboutUsBtn);
         mAuth = FirebaseAuth.getInstance(); // Initialize Firebase
-
 
 
         logInButton.setOnClickListener(new View.OnClickListener() { // login button
@@ -76,6 +89,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        aboutUsBtn.setOnClickListener(new View.OnClickListener() { //Button to go to about us
+            @Override
+            public void onClick(View v) {
+                aboutUs();
+                finish();
+            }
+        });
+
         signUpButton.setOnClickListener(new View.OnClickListener() { //Button to go to sign up
             @Override
             public void onClick(View v) {

@@ -12,7 +12,7 @@ import androidx.fragment.app.DialogFragment;
 import com.example.spotter.R;
 
 public class HelpFragmentDeadlifts extends DialogFragment {
-    private TextView instructionText, textView, ContactText;
+    private TextView instructionText, textView;
 
     private ImageView deadliftImage;
 
@@ -31,7 +31,6 @@ public class HelpFragmentDeadlifts extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_help_deadlift, container, false);
         instructionText = view.findViewById(R.id.instructionText);
         textView = view.findViewById(R.id.textView);
-        ContactText = view.findViewById(R.id.ContactText);
         deadliftImage = view.findViewById(R.id.deadliftImage);
 
         deadliftImage.setImageResource(R.drawable.deadlift);    // display imageView

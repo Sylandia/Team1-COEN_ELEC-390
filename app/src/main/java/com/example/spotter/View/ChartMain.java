@@ -69,8 +69,8 @@ public class ChartMain extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-
         //initially some btns are invisible
+        calibBtn.setVisibility(View.VISIBLE);
         startBtn.setVisibility(View.INVISIBLE);
         stopBtn.setVisibility(View.INVISIBLE);
         delay.setVisibility(View.INVISIBLE);
@@ -107,7 +107,7 @@ public class ChartMain extends AppCompatActivity {
 
                     if (startButtonPressed) {
                         flagDatabase.child("startRead").setValue(true);
-                        startPollingStartValue();
+                        startAcquisition(); //if connection breaks between calibration and start
                     } else {
                         startButtonPressed = true;
 
@@ -118,7 +118,7 @@ public class ChartMain extends AppCompatActivity {
                             }
 
                             public void onFinish() {
-                                if (startButtonPressed) {
+                                if (!startButtonPressed) {
                                     startTransfer = true;
                                     stopTransfer = false;
                                     flagDatabase.child("startRead").setValue(startTransfer);

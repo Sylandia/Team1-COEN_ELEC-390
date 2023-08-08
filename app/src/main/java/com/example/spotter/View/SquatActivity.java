@@ -49,9 +49,9 @@ public class SquatActivity extends AppCompatActivity {
 
     static final String Lobster = "Lobster_Squat";
 
-    private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text, relativeAngleX_text, relativeAngleY_text;
+    private TextView flex_text, relativeAngleX_text, flexWarning, imuWarning;
     private TextView clockTextView;
-    private Button chartButton, helpButton, stopAcqBtn, startClockButton, resetClockButton;
+    private Button chartButton, helpButton, stopAcqBtn;
     private DataBaseHelper db;
     private NotificationManagerCompat notificationManager;
     Context context = this;
@@ -80,17 +80,17 @@ public class SquatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_squats);
         db = new DataBaseHelper(SquatActivity.this);
-        angle1x_text = findViewById(R.id.squat_a1x);
-        angle1y_text = findViewById(R.id.squat_a1y);
-        angle2x_text = findViewById(R.id.squat_a2x);
-        angle2y_text = findViewById(R.id.squat_a2y);
         flex_text = findViewById(R.id.squat_flex);
         relativeAngleX_text = findViewById(R.id.squat_ra1);
-        relativeAngleY_text = findViewById(R.id.squat_ra2);
         chartButton = findViewById(R.id.chartButton);
         helpButton = findViewById(R.id.helpButton);
         stopAcqBtn = findViewById(R.id.stopAcqBtn);
         chartButton.setVisibility(View.INVISIBLE);
+
+        //Warnings
+        imuWarning = findViewById(R.id.imuWarning);
+        flexWarning = findViewById(R.id.flexWarning);
+
         //Notification
         notificationManager =  NotificationManagerCompat.from(this);
 
@@ -169,6 +169,7 @@ public class SquatActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        stopAcq = false;
         UpdateRealTimeData();
     }
 
@@ -195,13 +196,9 @@ public class SquatActivity extends AppCompatActivity {
 
                 squatNotification(imu, flex);
 
-                angle1x_text.setText(String.valueOf(imu.getAngle1_x()));
-                angle1y_text.setText(String.valueOf(imu.getAngle1_y()));
-                angle2x_text.setText(String.valueOf(imu.getAngle2_x()));
-                angle2y_text.setText(String.valueOf(imu.getAngle2_y()));
                 flex_text.setText(String.valueOf(flex.getFlex()));
                 relativeAngleX_text.setText(String.valueOf(imu.getRelative_x()));
-                relativeAngleY_text.setText(String.valueOf(imu.getRelative_y()));
+                updateWarning(imu.getRelative_x(),flex.getFlex());
 
                 boolean isDatabaseEmpty = db.isDatabaseEmpty();
                 if (isDatabaseEmpty) {
@@ -224,7 +221,6 @@ public class SquatActivity extends AppCompatActivity {
                 //Log.d(Lobster, "Value is: " + value);
 
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.w(Lobster, "Failed to retrieve value.");
@@ -248,9 +244,9 @@ public class SquatActivity extends AppCompatActivity {
     }
 
     private void stopAcqn(){
-        flagDatabase.child("stopRead").setValue(true);
-        chartButton.setVisibility(View.VISIBLE);
         if (!stopAcq) {
+            flagDatabase.child("stopRead").setValue(true);
+            chartButton.setVisibility(View.VISIBLE);
             int id = sharedPreferences.getInt("id", -1);
             if(id != -1) {
                 id++; //increment id for next acq
@@ -259,6 +255,29 @@ public class SquatActivity extends AppCompatActivity {
             } else {
                 Log.w(Lobster, "Failed to increment id value.");
             }
+        }
+    }
+
+    private void updateWarning (double imu, double flex){
+        if (imu > 110) {
+            imuWarning.setText("Warning: Squat is much too deep");
+        }
+        else if (imu > 100) {
+            imuWarning.setText("Caution: Squat is deep");
+        }
+        else if (imu > 80) {
+            imuWarning.setText("Great Squat");
+        }
+        else {
+            imuWarning.setText("");
+        }
+        if (flex > -5){
+            flexWarning.setText("Back is bent. Adjust form");
+        } else if(flex > -10) {
+            flexWarning.setText("Back is slightly bent");
+        }
+        else {
+            flexWarning.setText("Excellent");
         }
     }
 

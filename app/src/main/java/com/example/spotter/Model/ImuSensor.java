@@ -90,7 +90,20 @@ public class ImuSensor {
     }
     //Methods
     public double calculateRelativeAngle(double angle1, double angle2){
-        return Math.abs(angle1-angle2);
+       double relative;
+        if (angle2 > 0)
+        {
+            angle2 = - angle2;
+        }
+       if (angle2 - angle1 < 0)
+        {
+            relative = angle2 - angle1 + 360;
+        }
+        else
+        {
+            relative = angle2 - angle1;
+        }
+       return relative;
     }
 
 }

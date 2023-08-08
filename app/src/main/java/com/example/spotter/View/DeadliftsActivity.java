@@ -46,7 +46,7 @@ public class DeadliftsActivity extends AppCompatActivity {
     private int counter;
     static final String Lobster = "Lobster_Deadlift";
 
-    private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text, relativeAngleX_text, relativeAngleY_text, clockTextView;
+    private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text, relativeAngleX_text;
     private Button helpButton, chartButton, stopAcqBtn, startClockButton, resetClockButton;
     DatabaseReference refDatabase, sensor;
     private DataBaseHelper db;
@@ -81,7 +81,6 @@ public class DeadliftsActivity extends AppCompatActivity {
         angle2y_text = findViewById(R.id.deadlift_a2y);
         flex_text = findViewById(R.id.deadlift_flex);
         relativeAngleX_text = findViewById(R.id.deadlift_ra1);
-        relativeAngleY_text = findViewById(R.id.deadlift_ra2);
         chartButton = findViewById(R.id.chartButton);
         helpButton = findViewById(R.id.helpButton);
         stopAcqBtn = findViewById(R.id.stopAcqBtn);
@@ -194,7 +193,6 @@ public class DeadliftsActivity extends AppCompatActivity {
                 angle2y_text.setText(String.valueOf(imu.getAngle2_y()));
                 flex_text.setText(String.valueOf(flex.getFlex()));
                 relativeAngleX_text.setText(String.valueOf(imu.getRelative_x()));
-                relativeAngleY_text.setText(String.valueOf(imu.getRelative_y()));
                 boolean isDatabaseEmpty = db.isDatabaseEmpty();
                 if (isDatabaseEmpty) {
                     // Database is empty

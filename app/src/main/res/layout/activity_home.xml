@@ -4,12 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background2"
     tools:context=".View.HomeActivity">
 
     <Button
         android:id="@+id/warmupButton"
         android:layout_width="179dp"
         android:layout_height="63dp"
+        android:backgroundTint="#1CC516"
         android:text="Warmup"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -61,6 +63,7 @@
         android:id="@+id/squatsButton"
         android:layout_width="179dp"
         android:layout_height="63dp"
+        android:backgroundTint="#C15A0F"
         android:text="Squats"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -72,6 +75,7 @@
         android:id="@+id/deadliftsButton"
         android:layout_width="179dp"
         android:layout_height="63dp"
+        android:backgroundTint="#8C0404"
         android:text="Deadlifts"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,6 +88,7 @@
         android:layout_width="140dp"
         android:layout_height="48dp"
         android:text="Log Out"
+        android:textColor="#7A82EE"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.059"

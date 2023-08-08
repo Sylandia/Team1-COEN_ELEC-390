@@ -1,5 +1,6 @@
 package com.example.spotter.View;
 
+import static com.example.spotter.Controller.NotificationHelper.DEADLIFT;
 import static com.example.spotter.Controller.NotificationHelper.SQUAT;
 
 import android.Manifest;
@@ -267,15 +268,26 @@ public class SquatActivity extends AppCompatActivity {
     }
     public void squatNotification(ImuSensor i, FlexSensor f) { // have to have notifications enabled
 
-        if (f.getFlex() > 7.99) {
-            Notification notification = new NotificationCompat.Builder(this , SQUAT)
-                    .setSmallIcon(R.drawable.error_notification)
-                    .setContentTitle("Squat Error")
-                    .setContentText("Bending too much")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                    .build();
-            notificationManager.notify(0, notification);
-            Log.e(Lobster, "Notification Created");
+        if (f.getFlex() >= -10 ) { // below -10 Excellent; between -10 and -5 back is slightly bent
+            if(f.getFlex() > -5){ // above -5 means back is over bent
+
+                Notification notification = new NotificationCompat.Builder(this , SQUAT)
+                        .setSmallIcon(R.drawable.error_notification)
+                        .setContentTitle("Squat Error")
+                        .setContentText("Back is over bending! Fix form.")
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .build();
+                notificationManager.notify(1, notification);
+            }else {
+                Notification notification = new NotificationCompat.Builder(this, SQUAT)
+                        .setSmallIcon(R.drawable.warning_notification)
+                        .setContentTitle("Squat Error")
+                        .setContentText("Back is starting to bend.")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .build();
+                notificationManager.notify(1, notification);
+                //Log.e(Lobster, "Notification Created");
+            }
         }else{
             //do nothing
         }

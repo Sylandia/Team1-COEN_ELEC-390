@@ -213,7 +213,7 @@ public class SquatActivity extends AppCompatActivity {
                         db.insertSensors(flex, imu, "Squats", id);
                     }
                     else {
-                        Toast.makeText(context, "Database storage of sensor data failed", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Storing sensor data into database failed", Toast.LENGTH_LONG).show();
                     }
                 }
 

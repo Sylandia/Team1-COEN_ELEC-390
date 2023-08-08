@@ -35,7 +35,7 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
     public void DeleteDatabase(Context context){
         context.deleteDatabase("sensorValues.db");
-    }
+    } //if need to erase db
     @Override
     public void onCreate(SQLiteDatabase db) {
 
@@ -218,6 +218,31 @@ public class DataBaseHelper extends SQLiteOpenHelper{
 
         // Return true if both tables are empty
         return isImuTableEmpty && isFlexTableEmpty;
+    }
+
+    public Vector<Double> getIMU_Relative_Angle(int acquisitionId, String activity) {
+        Vector<Double> valX = new Vector<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor;
+        String[] angles = {COLUMN_RELATIVE_X};
+
+        // Define the WHERE clause to filter by ACQUISITION_ID and COLUMN_ACTIVITY
+        String whereClause = ACQUISITION_ID + " = ? AND " + COLUMN_ACTIVITY + " = ?";
+        String[] whereArgs = {String.valueOf(acquisitionId), activity};
+
+        // Get table values with the specified filters
+        cursor = db.query(IMU_TABLE, angles, whereClause, whereArgs, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                double relativeX = cursor.getDouble(0);
+                Log.d(Lobster, "Relative angle X: " + relativeX);
+                valX.add(relativeX);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return valX;
     }
 
 }

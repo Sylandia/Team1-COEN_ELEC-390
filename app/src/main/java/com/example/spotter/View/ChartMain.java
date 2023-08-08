@@ -87,7 +87,7 @@ public class ChartMain extends AppCompatActivity {
                 calib = true;
                 startTransfer = false;
                 flagDatabase.child("calib").setValue(calib);
-                flagDatabase.child("startRead").setValue(startTransfer);
+                //flagDatabase.child("startRead").setValue(startTransfer);
 
                 // Start the 15-second timer for the initial calibration check
                 handler.postDelayed(calibrationTimeoutRunnable, CALIBRATION_TIMEOUT);
@@ -106,7 +106,7 @@ public class ChartMain extends AppCompatActivity {
                     int delayTime = Integer.parseInt(delay.getText().toString().trim()) * 1000;
 
                     if (startButtonPressed) {
-                        flagDatabase.child("startRead").setValue(true);
+                        //flagDatabase.child("startRead").setValue(true);
                         startAcquisition(); //if connection breaks between calibration and start
                     } else {
                         startButtonPressed = true;
@@ -121,7 +121,7 @@ public class ChartMain extends AppCompatActivity {
                                 if (!startButtonPressed) {
                                     startTransfer = true;
                                     stopTransfer = false;
-                                    flagDatabase.child("startRead").setValue(startTransfer);
+                                    //flagDatabase.child("startRead").setValue(startTransfer);
 
                                     // Remove the previous callback if exists to avoid multiple callbacks
                                     if (startTimeoutRunnable != null) {
@@ -215,9 +215,12 @@ public class ChartMain extends AppCompatActivity {
         if (contextData.equals("squats")) {
             Intent intent = new Intent(ChartMain.this, SquatActivity.class);
             startActivity(intent);
+            Log.d(Lobster, "Going to Squats Activity");
+
         } else if (contextData.equals("deadlifts")) {
             Intent intent = new Intent(ChartMain.this, DeadliftsActivity.class);
             startActivity(intent);
+            Log.d(Lobster, "Going to Deadlift Activity");
         }
         else {
             Toast.makeText(context, "Acquisition Failed.", Toast.LENGTH_LONG).show();
@@ -276,10 +279,12 @@ public class ChartMain extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        flagDatabase.child("startRead").setValue(true);
         // Remove the listeners to avoid leaks and unwanted triggers
-        calibRef.removeEventListener(calibValueEventListener);
-        startRef.removeEventListener(startValueEventListener);
-        handler.removeCallbacksAndMessages(null);
+        //calibRef.removeEventListener(calibValueEventListener);
+        //startRef.removeEventListener(startValueEventListener);
+        //handler.removeCallbacksAndMessages(null);
+
     }
 
 

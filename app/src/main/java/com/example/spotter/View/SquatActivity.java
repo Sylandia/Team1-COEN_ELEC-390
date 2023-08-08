@@ -137,7 +137,13 @@ public class SquatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(Lobster, "Go to charts");
-                Intent intent = new Intent(SquatActivity.this, ChartMain.class);
+                int id = sharedPreferences.getInt("id", -1);
+                if(id != -1) {
+                    editor.putInt("id_chart", id);
+                } else {
+                    Log.w(Lobster, "Failed to get id for chart view.");
+                }
+                Intent intent = new Intent(SquatActivity.this, LineChartView.class);
                 startActivity(intent);
             }
         });
@@ -163,7 +169,6 @@ public class SquatActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        stopAcqn();
     }
 
     @Override
@@ -177,6 +182,9 @@ public class SquatActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             // Home button clicked
+            if (!stopAcq){
+                stopAcqn();
+            }
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
             return true;
@@ -249,6 +257,7 @@ public class SquatActivity extends AppCompatActivity {
             chartButton.setVisibility(View.VISIBLE);
             int id = sharedPreferences.getInt("id", -1);
             if(id != -1) {
+                editor.putInt("id_chart", id);
                 id++; //increment id for next acq
                 editor.putInt("id", id);
                 editor.apply();

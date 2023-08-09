@@ -1,6 +1,7 @@
 package com.example.spotter.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Context;
 import android.content.Intent;
@@ -253,12 +254,29 @@ public class LineChartView extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.chart_menu, menu);
+        getMenuInflater().inflate(R.menu.info_bar, menu);
         return true;
     }
 
+    /*
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.chart_menu, menu);
+        return true;
+    }
+    */
 
-
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_info_chart_activity) {
+            FragmentManager fm = getSupportFragmentManager();
+            InfoChartFragment hp = new InfoChartFragment();
+            hp.show(fm, "fragment_info_chart");
+            return true;
+        }
+        return(super.onOptionsItemSelected(item));
+    }
 }
 

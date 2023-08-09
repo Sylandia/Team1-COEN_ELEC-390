@@ -2,11 +2,18 @@ package com.example.spotter.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.example.spotter.Controller.DataBaseHelper;
 import com.example.spotter.R;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Description;
@@ -17,28 +24,86 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Vector;
 
 public class LineChartView extends AppCompatActivity {
 
     private LineChart lineChart;
     private List<String> xValues;
+    private DataBaseHelper db;
+    boolean orientation = false;
+
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_line_chart);
 
-        getSupportActionBar().setTitle("IMU Chart");
+        getSupportActionBar().setTitle("Angle of Knee");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         lineChart = findViewById(R.id.LineChart_view);
 
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        int id_acq = sharedPreferences.getInt("id_chart", -1);
+
+        if (id_acq == -1){
+            Toast.makeText(context, "Failed to retrieve Acquisition ID", Toast.LENGTH_LONG).show();
+            displayDummyChart();
+        }
+        else {
+            db = new DataBaseHelper(LineChartView.this);
+            String contextData = sharedPreferences.getString("callingActivity", "default_value");
+            if(contextData.equals("squats")) {
+                Vector<Double> relativeXValues = db.getIMU_Relative_Angle(id_acq, "Squats");
+                DisplayChart(relativeXValues);
+
+            } else if(contextData.equals("deadlifts")) {
+                Vector<Double> relativeXValues = db.getIMU_Relative_Angle(id_acq, "Deadlifts");
+                DisplayChart(relativeXValues);
+            } else {
+                Toast.makeText(context, "Cannot retrieve exercise to display.", Toast.LENGTH_LONG).show();
+                displayDummyChart();
+
+            }
+        }
+
+        //For testing
+        /*db = new DataBaseHelper(LineChartView.this);
+        Vector<Double> relativeXValues = db.getIMU_Relative_Angle(9, "Squats");
+        DisplayChart(relativeXValues);*/
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            // Home button clicked
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            return true;
+        } else if(id == R.id.menu_change) {
+            if (!orientation){
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                orientation = false;
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void displayDummyChart() {
+        //Dummy Chart
         Description description = new Description();
-        description.setText("IMU Readings");
         description.setPosition(350f, 15f); //will need to change
         description.setTextColor(Color.WHITE);
         description.setTextSize(14f);
@@ -105,14 +170,95 @@ public class LineChartView extends AppCompatActivity {
         lineChart.invalidate();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            // Home button clicked
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
-            return true;
+    private void DisplayChart (Vector<Double> rel_x){
+        Description description = new Description();
+        description.setText("");
+        description.setPosition(350f, 15f); //will need to change
+        description.setTextColor(Color.WHITE);
+        description.setTextSize(0f);
+        lineChart.setDescription(description);
+        lineChart.setPinchZoom(true);
+        lineChart.setTouchEnabled(true);
+        lineChart.getAxisRight().setDrawLabels(false);
+        lineChart.getAxisRight().setEnabled(false);
+
+        //Trying stuff
+        lineChart.setDrawBorders(true);
+
+
+        xValues = new ArrayList<>();
+        for (int i = 0; i < rel_x.size(); i++) {
+            xValues.add(Integer.toString(i + 1));
         }
-        return super.onOptionsItemSelected(item);
+
+        List <Entry> entries1 = new ArrayList<>();
+        // Convert Vector<Double> to Vector<Float>
+        Vector<Float> floatVector = new Vector<>();
+        for (Double value : rel_x) {
+            float floatValue = value.floatValue(); // Convert Double to Float
+            floatVector.add(floatValue);
+        }
+        for (int i = 0; i < floatVector.size(); i++) {
+            entries1.add(new Entry(i, floatVector.get(i)));
+        }
+
+        List <Entry> entries2 = new ArrayList<>();
+        for (int i = 0; i < floatVector.size(); i++) {
+            entries2.add(new Entry(i, 100));
+        }
+
+        List <Entry> entries3 = new ArrayList<>();
+        for (int i = 0; i < floatVector.size(); i++) {
+            entries3.add(new Entry(i, 110));
+        }
+
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter(xValues));
+        xAxis.setLabelCount(xValues.size());
+        xAxis.setGranularity(1f);
+        xAxis.setTextColor(Color.WHITE);
+
+
+        YAxis yAxis = lineChart.getAxisLeft();
+        yAxis.setAxisMinimum(-10f);
+        yAxis.setAxisMaximum(140f);
+        yAxis.setAxisLineWidth(2f);
+        yAxis.setAxisLineColor(Color.BLACK);
+        yAxis.setLabelCount(10);
+        yAxis.setTextColor(Color.WHITE);
+
+        Legend legend = lineChart.getLegend();
+        legend.setTextColor(Color.WHITE);
+
+        LineDataSet lineDataSet1 = new LineDataSet(entries1, "IMU Values");
+        lineDataSet1.setColor(Color.BLUE);
+        lineDataSet1.setDrawValues(false);
+
+        LineDataSet lineDataSet2 = new LineDataSet(entries2, "range start");
+        lineDataSet2.setColor(Color.RED);
+        lineDataSet2.setDrawValues(false);
+
+        LineDataSet lineDataSet3 = new LineDataSet(entries2, "range end");
+        lineDataSet2.setColor(Color.RED);
+        lineDataSet2.setDrawValues(false);
+
+        LineData lineData = new LineData(lineDataSet1);
+        lineChart.setData(lineData);
+        lineData.setValueTextColor(Color.WHITE);
+
+        lineChart.invalidate();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.chart_menu, menu);
+        return true;
+    }
+
+
+
+
 }
+

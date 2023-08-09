@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="IMU1"
+            android:text="IMU1 (deg)"
             android:textSize="20dp" />
 
         <TextView
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="IMU2"
+            android:text="IMU2 (deg)"
             android:textSize="20dp" />
     </LinearLayout>
 
@@ -134,16 +134,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Relative Angle between sensors along X-axis"
+            android:text="Knee Angle (deg)"
             android:textSize="20dp" />
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Relative Angle between sensors along Y-axis"
-            android:textSize="20sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -153,6 +146,7 @@
         android:gravity="center_vertical">
 
         <TextView
+            android:layout_marginTop="10dp"
             android:id="@+id/deadlift_ra1"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -162,15 +156,6 @@
             android:maxLength="6"
             android:textSize="25dp" />
 
-        <TextView
-            android:id="@+id/deadlift_ra2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="0.00"
-            android:maxLength="6"
-            android:textSize="25dp" />
     </LinearLayout>
 
 
@@ -180,7 +165,7 @@
         android:gravity="center"
         android:layout_marginTop="50dp"
         android:textSize="20dp"
-        android:text="Flex Sensor:"
+        android:text="Flex Sensor (deg)"
         />
 
 
@@ -189,20 +174,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:textSize="25dp"
         android:text="0.00"
         android:maxLength="6"
         />
 
-    <Button
-        android:id="@+id/chartButton"
+    <LinearLayout
+        android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_gravity="center"
-        android:layout_marginTop="30dp"
-        android:text="Start Acquisition"
-        />
+        >
+
+        <Button
+            android:id="@+id/stopAcqBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stop Acquisition"></Button>
+
+        <Button
+            android:id="@+id/chartButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="See Chart"
+            />
+
+
+    </LinearLayout>
 
     <Button
         android:layout_gravity="center"

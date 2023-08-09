@@ -6,8 +6,10 @@ import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -27,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.example.spotter.Controller.NotificationHelper;
@@ -55,13 +58,18 @@ public class SquatActivity extends AppCompatActivity {
 
     static final String Lobster = "Lobster_Squat";
 
-    private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text, relativeAngleX_text, relativeAngleY_text;
+    private TextView flex_text, relativeAngleX_text, flexWarning, imuWarning;
     private TextView clockTextView;
-    private Button chartButton, helpButton, startClockButton, resetClockButton;
+    private Button chartButton, helpButton, startClockButton, resetClockButton, stopAcqBtn;
     private DataBaseHelper db;
     private NotificationManagerCompat notificationManager;
+    Context context = this;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
+    boolean stopAcq;
 
-    DatabaseReference refDatabase;
+    DatabaseReference sensorDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
+    DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
 
     private View.OnClickListener helpActivity = new View.OnClickListener() {
         @Override
@@ -76,21 +84,30 @@ public class SquatActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_squats);
         db = new DataBaseHelper(SquatActivity.this);
-        angle1x_text = findViewById(R.id.squat_a1x);
-        angle1y_text = findViewById(R.id.squat_a1y);
-        angle2x_text = findViewById(R.id.squat_a2x);
-        angle2y_text = findViewById(R.id.squat_a2y);
         flex_text = findViewById(R.id.squat_flex);
         relativeAngleX_text = findViewById(R.id.squat_ra1);
-        relativeAngleY_text = findViewById(R.id.squat_ra2);
         chartButton = findViewById(R.id.chartButton);
         helpButton = findViewById(R.id.helpButton);
+        stopAcqBtn = findViewById(R.id.stopAcqBtn);
+        chartButton.setVisibility(View.INVISIBLE);
+
+        //Warnings
+        imuWarning = findViewById(R.id.imuWarning);
+        flexWarning = findViewById(R.id.flexWarning);
+
         //Notification
         notificationManager =  NotificationManagerCompat.from(this);
+
+        sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        editor = sharedPreferences.edit();
+
+        //Delete Database if needed
+        //db.DeleteDatabase(this);
 
 
         //startClockButton = findViewById(R.id.startClockButton);
@@ -129,31 +146,44 @@ public class SquatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(Lobster, "Go to charts");
-                Intent intent = new Intent(SquatActivity.this, ChartMain.class);
+                int id = sharedPreferences.getInt("id", -1);
+                if(id != -1) {
+                    editor.putInt("id_chart", id);
+                } else {
+                    Log.w(Lobster, "Failed to get id for chart view.");
+                }
+                Intent intent = new Intent(SquatActivity.this, LineChartView.class);
                 startActivity(intent);
             }
         });
 
-        UpdateRealTimeData();
-
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
+        stopAcqBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopAcqn();
+                stopAcq = true;
+                stopAcqBtn.setVisibility(View.INVISIBLE);
+            }
+        });
 
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        UpdateRealTimeData();
+        //UpdateRealTimeData();
 
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
+        stopAcq = false;
         UpdateRealTimeData();
     }
 
@@ -215,28 +245,10 @@ public class SquatActivity extends AppCompatActivity {
         clockTextView.setText(String.valueOf(counter));
     }
 
-    /*
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            // Home button clicked
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-     */
-
-    public double CalculateRelativeAngle(double imu1, double imu2) {
-        return (imu1 - imu2);
-    }
 
     private void UpdateRealTimeData() {
-        refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
 
-        refDatabase.addValueEventListener(new ValueEventListener() {
+        sensorDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
@@ -246,19 +258,31 @@ public class SquatActivity extends AppCompatActivity {
 
                 squatNotification(imu, flex);
 
-                angle1x_text.setText(String.valueOf(imu.getAngle1_x()));
-                angle1y_text.setText(String.valueOf(imu.getAngle1_y()));
-                angle2x_text.setText(String.valueOf(imu.getAngle2_x()));
-                angle2y_text.setText(String.valueOf(imu.getAngle2_y()));
                 flex_text.setText(String.valueOf(flex.getFlex()));
                 relativeAngleX_text.setText(String.valueOf(imu.getRelative_x()));
-                relativeAngleY_text.setText(String.valueOf(imu.getRelative_y()));
-                db.insertSensors(flex, imu, "Squats");
+                updateWarning(imu.getRelative_x(),flex.getFlex());
+
+                boolean isDatabaseEmpty = db.isDatabaseEmpty();
+                if (isDatabaseEmpty) {
+                    // Database is empty
+                    editor.putInt("id", 1); // Replace "key" with your context identifier and "value" with the actual data to be passed.
+                    editor.apply();
+                    db.insertSensors(flex, imu, "Squats", 1);
+                } else {
+                    //Database is not empty
+                    int id = sharedPreferences.getInt("id", -1);
+                    if (id != -1) {
+                        db.insertSensors(flex, imu, "Squats", id);
+                    }
+                    else {
+                        Toast.makeText(context, "Storing sensor data into database failed", Toast.LENGTH_LONG).show();
+                    }
+                }
+
 
                 //Log.d(Lobster, "Value is: " + value);
 
             }
-
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.w(Lobster, "Failed to retrieve value.");
@@ -267,7 +291,7 @@ public class SquatActivity extends AppCompatActivity {
     }
     public void squatNotification(ImuSensor i, FlexSensor f) { // have to have notifications enabled
 
-        if (f.getFlex() > 7.99) {
+        if (f.getFlex() > 10) {
             Notification notification = new NotificationCompat.Builder(this , SQUAT)
                     .setSmallIcon(R.drawable.error_notification)
                     .setContentTitle("Squat Error")
@@ -278,6 +302,45 @@ public class SquatActivity extends AppCompatActivity {
             Log.e(Lobster, "Notification Created");
         }else{
             //do nothing
+        }
+    }
+
+    private void stopAcqn(){
+        if (!stopAcq) {
+            flagDatabase.child("stopRead").setValue(true);
+            chartButton.setVisibility(View.VISIBLE);
+            int id = sharedPreferences.getInt("id", -1);
+            if(id != -1) {
+                editor.putInt("id_chart", id);
+                id++; //increment id for next acq
+                editor.putInt("id", id);
+                editor.apply();
+            } else {
+                Log.w(Lobster, "Failed to increment id value.");
+            }
+        }
+    }
+
+    private void updateWarning (double imu, double flex){
+        if (imu > 110) {
+            imuWarning.setText("Warning: Squat is much too deep");
+        }
+        else if (imu > 100) {
+            imuWarning.setText("Caution: Squat is deep");
+        }
+        else if (imu > 80) {
+            imuWarning.setText("Great Squat");
+        }
+        else {
+            imuWarning.setText("");
+        }
+        if (flex > 15){
+            flexWarning.setText("Back is bent. Adjust form");
+        } else if(flex > 5) {
+            flexWarning.setText("Back is slightly bent");
+        }
+        else {
+            flexWarning.setText("Excellent");
         }
     }
 
@@ -292,7 +355,16 @@ public class SquatActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.menu_clock_activity) {
+        if (item.getItemId() == android.R.id.home) {
+            // Home button clicked
+            if (!stopAcq){
+                stopAcqn();
+            }
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if (id == R.id.menu_clock_activity) {
             Log.d(Lobster, "Go to Clock Dialog Fragment");
             FragmentManager fm = getSupportFragmentManager();
             ClockFragment hp = new ClockFragment();

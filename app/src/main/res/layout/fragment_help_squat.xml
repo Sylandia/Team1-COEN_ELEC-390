@@ -70,7 +70,6 @@
         android:layout_marginTop="320dp"
         android:padding="16dp"
         android:textAlignment="center"
-        android:text="Contact us:\n(1800) 776-8837\nEmail: spotter@hotmail.com"
         android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

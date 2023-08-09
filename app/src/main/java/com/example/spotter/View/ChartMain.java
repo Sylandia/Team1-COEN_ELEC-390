@@ -7,8 +7,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,15 +34,25 @@ import java.util.Map;
 public class ChartMain extends AppCompatActivity {
     EditText delay;
     TextView countDown;
-    Button startBtn, stopBtn, calibBtn;
+    Button startBtn, calibBtn;
 
     static final String Lobster = "Lobster_ChartMain";
     DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
-    DatabaseReference sensorDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); //path for sensor data
+    DatabaseReference calibRef = flagDatabase.child("calib");
+    DatabaseReference startRef = flagDatabase.child("startRead");
     boolean startTransfer = false;
     boolean stopTransfer = false;
+    boolean startButtonPressed = false;
     boolean calib = false;
-    Context context = this;
+    private Context context = this;
+
+    //Handler for calib timeout
+    private Handler handler = new Handler();
+    private Runnable calibrationTimeoutRunnable;
+    private Runnable startTimeoutRunnable;
+    private static final int CALIBRATION_TIMEOUT = 15000; // 15 seconds in milliseconds
+    private ValueEventListener calibValueEventListener;
+    private ValueEventListener startValueEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +60,6 @@ public class ChartMain extends AppCompatActivity {
         setContentView(R.layout.activity_chart_main);
 
         startBtn = findViewById(R.id.startButton);
-        stopBtn = findViewById(R.id.stopButton);
         delay = findViewById(R.id.delayText);
         calibBtn = findViewById(R.id.calibrateBtn);
         countDown = findViewById(R.id.countdownTxt);
@@ -56,10 +68,9 @@ public class ChartMain extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-
         //initially some btns are invisible
+        calibBtn.setVisibility(View.VISIBLE);
         startBtn.setVisibility(View.INVISIBLE);
-        stopBtn.setVisibility(View.INVISIBLE);
         delay.setVisibility(View.INVISIBLE);
         countDown.setVisibility(View.INVISIBLE);
 
@@ -69,101 +80,99 @@ public class ChartMain extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(context, "Calibration will take a second. Don't move sensors!", Toast.LENGTH_LONG).show();
-                calib = true;
-                stopTransfer = false;
-                flagDatabase.child("calib").setValue(calib);
-                flagDatabase.child("stopRead").setValue(stopTransfer);
-                DatabaseReference calibRef = flagDatabase.child("calib");
-                calibRef.addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        boolean calibValue = snapshot.getValue(boolean.class);
-                        if (!calibValue)  {
-                            startBtn.setVisibility(View.VISIBLE);
-                            calibBtn.setVisibility(View.INVISIBLE);
-                            delay.setVisibility(View.VISIBLE);
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-                        Log.d("Lobster", "Calibration Unsuccessful");
-                    }
-                });
+                // Set calib and startTransfer to false and update the database
+                calib = true;
+                startTransfer = false;
+                flagDatabase.child("calib").setValue(calib);
+                //flagDatabase.child("startRead").setValue(startTransfer);
+
+                // Start the 15-second timer for the initial calibration check
+                handler.postDelayed(calibrationTimeoutRunnable, CALIBRATION_TIMEOUT);
+
+                // Start polling the database for changes in the calib value
+                startPollingCalibValue();
             }
         });
+
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 if (delay.getText().toString().isEmpty()) {
                     Toast.makeText(context, "Please fill in the delay", Toast.LENGTH_SHORT).show();
                 } else {
                     int delayTime = Integer.parseInt(delay.getText().toString().trim()) * 1000;
 
+                    if (startButtonPressed) {
+                        //flagDatabase.child("startRead").setValue(true);
+                        startAcquisition(); //if connection breaks between calibration and start
+                    } else {
+                        startButtonPressed = true;
 
-                    countDown.setVisibility(View.VISIBLE);
-                    new CountDownTimer(delayTime, 1000) {
-                        public void onTick(long millisUntilFinished) {
-                            countDown.setText("Start in: " + String.valueOf((int)millisUntilFinished/1000));
-                        }
+                        countDown.setVisibility(View.VISIBLE);
+                        new CountDownTimer(delayTime, 1000) {
+                            public void onTick(long millisUntilFinished) {
+                                countDown.setText("Start in: " + String.valueOf((int) millisUntilFinished / 1000));
+                            }
 
-                        public void onFinish() {
+                            public void onFinish() {
+                                if (!startButtonPressed) {
+                                    startTransfer = true;
+                                    stopTransfer = false;
+                                    //flagDatabase.child("startRead").setValue(startTransfer);
 
-                            startTransfer = true;
-                            stopTransfer = false;
-
-                            // Set the value directly at a specific location if you have a fixed path:
-                            flagDatabase.child("startRead").setValue(startTransfer);
-                            DatabaseReference startRef = flagDatabase.child("startRead");
-                            startRef.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    boolean startValue = snapshot.getValue(boolean.class);
-                                    if (!startValue)  {
-                                        startBtn.setVisibility(View.INVISIBLE);
-                                        stopBtn.setVisibility(View.VISIBLE);
-                                        sendSensorDataToDatabase();
+                                    // Remove the previous callback if exists to avoid multiple callbacks
+                                    if (startTimeoutRunnable != null) {
+                                        handler.removeCallbacks(startTimeoutRunnable);
                                     }
+
+                                    startTimeoutRunnable = new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            // This code will be executed after 15 seconds
+                                            startPollingStartValue();
+                                            if (startTransfer) {
+                                                Toast.makeText(context, "Start failed.", Toast.LENGTH_LONG).show();
+                                                startBtn.setVisibility(View.VISIBLE);
+                                            }
+                                        }
+                                    };
                                 }
+                                startRef.addValueEventListener(startValueEventListener = new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        boolean startValue = snapshot.getValue(boolean.class);
+                                        if (!startValue) {
+                                            // Reset the previous callback
+                                            handler.removeCallbacks(startTimeoutRunnable);
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-                                    Log.d("Lobster", "Calibration Unsuccessful");
-                                }
-                            });
+                                            startBtn.setVisibility(View.INVISIBLE);
+                                            //sendSensorDataToDatabase();
+                                            startAcquisition();
 
-                        }
-                    }.start();
+                                            // Start the 15-second timer again
+                                            handler.postDelayed(startTimeoutRunnable, CALIBRATION_TIMEOUT);
+                                        }
+                                    }
 
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Log.d(Lobster, "Start Unsuccessful");
+                                    }
+                                });
 
-   /*                 new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                        }
-                    }, delayTime*1000); //Time in millisenconds
-
-*/
+                                // Start the 15-second timer for the initial start check
+                                handler.postDelayed(startTimeoutRunnable, CALIBRATION_TIMEOUT);
+                            }
+                        }.start();
+                    }
                 }
-            }
-
-        });
-
-        stopBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startTransfer = false;
-                stopTransfer = true;
-                flagDatabase.child("stopRead").setValue(stopTransfer);
-                stopBtn.setVisibility(View.INVISIBLE);
-                calibBtn.setVisibility(View.VISIBLE);
-                delay.setVisibility(View.INVISIBLE);
             }
         });
 
     }
 
-    private void sendSensorDataToDatabase() {
+    /*private void sendSensorDataToDatabase() {
         sensorDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -178,9 +187,85 @@ public class ChartMain extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Lobster","Failed to retrieve sensor value");
+                Log.d(Lobster,"Failed to retrieve sensor value");
             }
         });
+    }*/
+
+
+
+    public void startAcquisition (){
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        String contextData = sharedPreferences.getString("callingActivity", "default_value"); // Replace "key" with the context identifier used while sending and provide a default value.
+        if (contextData.equals("squats")) {
+            Intent intent = new Intent(ChartMain.this, SquatActivity.class);
+            startActivity(intent);
+            Log.d(Lobster, "Going to Squats Activity");
+
+        } else if (contextData.equals("deadlifts")) {
+            Intent intent = new Intent(ChartMain.this, DeadliftsActivity.class);
+            startActivity(intent);
+            Log.d(Lobster, "Going to Deadlift Activity");
+        }
+        else {
+            Toast.makeText(context, "Acquisition Failed.", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    // Function to start polling the database for changes in calib value
+    private void startPollingCalibValue() {
+        calibRef.addValueEventListener(calibValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                calib = snapshot.getValue(boolean.class);
+                if (!calib) {
+                    // Calibration successful
+                    handler.removeCallbacks(calibrationTimeoutRunnable);
+                    startBtn.setVisibility(View.VISIBLE);
+                    calibBtn.setVisibility(View.INVISIBLE);
+                    delay.setVisibility(View.VISIBLE);
+                } else {
+                    // Calibration failed after 15 seconds
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (calib) {
+                                Toast.makeText(context, "Calibration failed.", Toast.LENGTH_LONG).show();
+                                calibBtn.setVisibility(View.VISIBLE);
+                                startBtn.setVisibility(View.INVISIBLE);
+                                delay.setVisibility(View.INVISIBLE);
+                            }
+                        }
+                    }, CALIBRATION_TIMEOUT);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(Lobster, "Failed to get calib from DB");
+            }
+        });
+    }
+
+    private void startPollingStartValue() {
+        startRef.addValueEventListener(startValueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                startTransfer = snapshot.getValue(boolean.class);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.d(Lobster, "Failed to get startRead from DB");
+            }
+        });
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        flagDatabase.child("startRead").setValue(true);
+
     }
 
 

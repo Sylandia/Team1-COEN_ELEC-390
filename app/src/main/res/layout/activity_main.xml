@@ -11,8 +11,9 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="center">
+        android:layout_weight="2"
+        android:gravity="center"
+        android:orientation="vertical">
     <TextView
         android:id="@+id/spotterText"
         android:layout_width="wrap_content"
@@ -21,6 +22,16 @@
         android:textStyle="bold"
         android:gravity="center"
         android:text="@string/spotter" />
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="An App that helps improve workout form"
+            android:textSize="20dp"/>
+
+
+
     </LinearLayout>
 
     <LinearLayout
@@ -81,18 +92,44 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="No account?">
-        </TextView>
+            android:text="No account?"></TextView>
+
         <Button
             android:id="@+id/signUpButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Sign Up" />
     </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/aboutUsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:text="About Us" />
+
+        <ImageButton
+            android:id="@+id/aboutUsBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="53dp"
+            android:layout_below="@id/aboutUsText"
+            android:layout_centerHorizontal="true"
+            app:srcCompat="@drawable/ic_about_us" />
+    </RelativeLayout>
+
+
 
 </LinearLayout>

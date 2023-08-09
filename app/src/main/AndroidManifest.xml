@@ -3,8 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
+        android:name=".Controller.NotificationHelper"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -15,19 +17,58 @@
         android:theme="@style/Theme.AppCompat"
         tools:targetApi="31">
         <activity
-            android:name=".View.SquatActivity"
+            android:name=".View.InfoChartFragment"
             android:exported="false" />
+        <activity
+            android:name=".View.AboutActivity"
+            android:parentActivityName=".View.MainActivity" />
+        <activity
+            android:name=".View.ClockFragment"
+            android:parentActivityName=".View.DeadliftsActivity" />
+        <activity
+            android:name=".View.WarmupActivity"
+            android:parentActivityName=".View.MainActivity" />
+        <activity
+            android:name=".View.DeadliftHistory"
+            android:parentActivityName=".View.AccountActivity" />
+        <activity
+            android:name=".View.SquatHistory"
+            android:parentActivityName=".View.AccountActivity" />
+        <activity
+            android:name=".View.AccountActivity"
+            android:parentActivityName=".View.SettingsActivity" />
+        <activity
+            android:name=".View.NotificationFragment"
+            android:parentActivityName=".View.NotificationsActivity" />
+        <activity
+            android:name=".View.NotificationsActivity"
+            android:parentActivityName=".View.SettingsActivity" />
+        <activity
+            android:name=".View.LanguageFragment"
+            android:parentActivityName=".View.NotificationsActivity" />
+        <activity
+            android:name=".View.HelpFragmentDeadlifts"
+            android:exported="false" />
+        <activity
+            android:name=".View.SettingsActivity"
+            android:parentActivityName=".View.MainActivity" />
+        <activity
+            android:name=".View.ProfileActivity"
+            android:parentActivityName=".View.MainActivity" />
+        <activity
+            android:name=".View.HelpFragmentSquats"
+            android:exported="false" />
+        <activity
+            android:name=".View.SquatActivity"
+            android:parentActivityName=".View.MainActivity" />
         <activity
             android:name=".View.DeadliftsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".View.LateralsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".View.CurlsActivity"
-            android:exported="false" />
+            android:parentActivityName=".View.MainActivity" />
         <activity
             android:name=".View.LineChartView"
+            android:exported="false" />
+        <activity
+            android:name=".View.ChartMain"
             android:exported="false" />
         <activity
             android:name=".View.HomeActivity"
@@ -36,18 +77,8 @@
             android:name=".View.SignUpActivity"
             android:parentActivityName=".View.MainActivity" />
         <activity
-            android:name=".View.LoginActivity"
-            android:exported="false" /> <!-- android:name=".View.MainActivity" -->
-        <!-- android:exported="false" /> -->
-        <activity
-            android:name=".View.RegisterActivity"
-            android:exported="false" />
-        <activity
             android:name=".View.MainActivity"
             android:exported="true">
-
-            <!-- android:name=".View.LoginActivity" -->
-            <!-- android:exported="true" > -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

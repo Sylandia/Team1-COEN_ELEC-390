@@ -26,7 +26,7 @@ public class SignUpActivity extends AppCompatActivity {
     public EditText usernameText, passwordText, confirmPasswordText;
     public Button confirmButton, loginButton;
     FirebaseAuth mAuth; //connect to firebase
-    private FirebaseHelper fb;
+    //private FirebaseHelper fb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +41,6 @@ public class SignUpActivity extends AppCompatActivity {
         confirmPasswordText = findViewById(R.id.confirmPasswordText);
         confirmButton = findViewById(R.id.confirmButton);
         mAuth = FirebaseAuth.getInstance(); // Initialize Firebase
-        fb = new FirebaseHelper(SignUpActivity.this);
 
         confirmButton.setOnClickListener(new View.OnClickListener() { //button to create account
             @Override
@@ -51,11 +50,6 @@ public class SignUpActivity extends AppCompatActivity {
                     String email, password;
                     email = String.valueOf(usernameText.getText());
                     password = String.valueOf(passwordText.getText());
-
-//                    if(fb.signUp(email, password)){
-//                        goToLogin();
-//                        finish();
-//                    }
 
                     mAuth.createUserWithEmailAndPassword(email, password) // from Firebase documentation for creating user https://firebase.google.com/docs/auth/android/start#java
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
@@ -73,6 +67,7 @@ public class SignUpActivity extends AppCompatActivity {
                                         Toast.makeText(SignUpActivity.this, "Authentication failed.", Toast.LENGTH_SHORT).show();
 
                                     }
+
                                 }
                             });
                 }

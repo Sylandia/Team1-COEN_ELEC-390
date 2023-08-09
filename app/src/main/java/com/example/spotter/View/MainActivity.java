@@ -2,14 +2,19 @@ package com.example.spotter.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.spotter.Controller.FirebaseHelper;
@@ -26,8 +31,16 @@ public class MainActivity extends AppCompatActivity {
     public EditText usernameText, passwordText;
     public Button logInButton, signUpButton;
     private FirebaseAuth mAuth; // connect to firebase
-    //private FirebaseHelper fb;
+    public static final String  CHANNEL_1 = "CH1";
 
+    private TextView aboutUsText;
+    private ImageButton aboutUsBtn;
+
+   private void aboutUs() {
+       Log.d(Lobster, "Going to About us");
+       Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+       startActivity(intent);
+   }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
         passwordText = findViewById(R.id.passwordTextM);
         logInButton = findViewById(R.id.logInButton);
         signUpButton = findViewById(R.id.signUpButton);
+        aboutUsText = findViewById(R.id.aboutUsText);
+        aboutUsBtn = findViewById(R.id.aboutUsBtn);
         mAuth = FirebaseAuth.getInstance(); // Initialize Firebase
-        //fb = new FirebaseHelper(MainActivity.this);
 
 
         logInButton.setOnClickListener(new View.OnClickListener() { // login button
@@ -53,12 +67,7 @@ public class MainActivity extends AppCompatActivity {
                     String email, password;
                     email = String.valueOf(usernameText.getText());
                     password = String.valueOf(passwordText.getText());
-//
-//                    if(fb.signIn(email, password)){
-//                        //TODO go to the next activity after success through intent.
-//                        goToLogin();
-//                        finish();
-//                    }
+
 
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(new OnCompleteListener<AuthResult>() { // from Firebase documentation for creating user https://firebase.google.com/docs/auth/android/start#java
@@ -80,6 +89,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        aboutUsBtn.setOnClickListener(new View.OnClickListener() { //Button to go to about us
+            @Override
+            public void onClick(View v) {
+                aboutUs();
+                finish();
+            }
+        });
+
         signUpButton.setOnClickListener(new View.OnClickListener() { //Button to go to sign up
             @Override
             public void onClick(View v) {
@@ -92,15 +110,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart(){ // make sure no one is logged in.
         super.onStart();
-//        if(fb.signInCheck()){
-//            //TODO intent of where to go.
-//            goToLogin();
-//            finish();
-//
-//        }
+
         FirebaseUser currentUser = mAuth.getCurrentUser(); // check for sign in
         if(currentUser != null){
-            //TODO intent of where to go.
              goToLogin();
              finish();
         }
@@ -140,13 +152,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void goToSignUp(){
-
+        Log.d(Lobster, "Going to Sign up");
         Intent intent = new Intent(MainActivity.this, SignUpActivity.class);
         startActivity(intent);
     }
     private void goToLogin(){
-
+        Log.d(Lobster, "Going to Login");
         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
         startActivity(intent);
     }
+
 }

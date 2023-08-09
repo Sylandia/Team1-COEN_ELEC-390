@@ -47,9 +47,10 @@ public class DeadliftsActivity extends AppCompatActivity {
     private boolean timerRunning = false;
     private CountDownTimer countDownTimer;
     private int counter;
+    boolean stopAcq;
     static final String Lobster = "Lobster_Deadlift";
 
-    private TextView angle1x_text, angle1y_text, angle2x_text, angle2y_text, flex_text, relativeAngleX_text;
+    private TextView flexWarning, imuWarning, flex_text, relativeAngleX_text;
     private Button helpButton, chartButton, stopAcqBtn, startClockButton, resetClockButton;
     DatabaseReference refDatabase, sensor;
     private DataBaseHelper db;
@@ -78,17 +79,16 @@ public class DeadliftsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_deadlifts);
         db = new DataBaseHelper(DeadliftsActivity.this);
 
-        angle1x_text = findViewById(R.id.deadlift_a1x);
-        angle1y_text = findViewById(R.id.deadlift_a1y);
-        angle2x_text = findViewById(R.id.deadlift_a2x);
-        angle2y_text = findViewById(R.id.deadlift_a2y);
         flex_text = findViewById(R.id.deadlift_flex);
         relativeAngleX_text = findViewById(R.id.deadlift_ra1);
         chartButton = findViewById(R.id.chartButton);
-        helpButton = findViewById(R.id.helpButton);
         stopAcqBtn = findViewById(R.id.stopAcqBtn);
         //Notification
         notificationManager =  NotificationManagerCompat.from(this);
+
+        //Warnings
+        imuWarning = findViewById(R.id.imuWarning_deadlift);
+        flexWarning = findViewById(R.id.flexWarning_deadlift);
 
         //startClockButton = findViewById(R.id.startClockButton);
         //resetClockButton = findViewById(R.id.resetClockButton);
@@ -116,10 +116,6 @@ public class DeadliftsActivity extends AppCompatActivity {
             }
         });*/
 
-        refDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
-
-        helpButton.setOnClickListener(helpActivity);
-
         getSupportActionBar().setTitle("Deadlifts");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -127,6 +123,12 @@ public class DeadliftsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d(Lobster, "Go to charts");
+                int id = sharedPreferences.getInt("id", -1);
+                if(id != -1) {
+                    editor.putInt("id_chart", id);
+                } else {
+                    Log.w(Lobster, "Failed to get id for chart view.");
+                }
                 Intent intent = new Intent(DeadliftsActivity.this, LineChartView.class);
                 startActivity(intent);
             }
@@ -135,105 +137,20 @@ public class DeadliftsActivity extends AppCompatActivity {
         stopAcqBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                flagDatabase.child("stopRead").setValue(false);
-                chartButton.setVisibility(View.VISIBLE);
-                int id = sharedPreferences.getInt("id", -1);
-                if (id != -1) {
-                    id++; //increment id for next acq
-                    editor.putInt("id", id);
-                } else {
-                    Log.w(Lobster, "Failed to increment id value.");
-                }
+                stopAcqn();
+                stopAcq = true;
+                stopAcqBtn.setVisibility(View.INVISIBLE);
             }
         });
-
-        UpdateRealTimeData();
-//        refDatabase.addValueEventListener(new ValueEventListener() { // to update the values from realtime database
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//                Log.w(Lobster, "Failed to retrieve value.");
-//            }
-//        });
-    }
-    /*
-    private void startTimer() {
-        timerRunning = true;
-        countDownTimer = new CountDownTimer(30000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                counter++;
-                clockTextView.setText(String.valueOf(counter));
-            }
-
-            public void onFinish() {
-                clockTextView.setText("Stop");
-                stopTimer();
-            }
-        }.start();
-    }
-    /*
-    private void pauseTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        timerPaused = true;
-    }
-
-    private void resumeTimer() {
-        timerRunning = true;
-        timerPaused = false;
-        countDownTimer = new CountDownTimer((30 - counter) * 1000, 1000) {
-            public void onTick(long millisUntilFinished) {
-                counter++;
-                clockTextView.setText(String.valueOf(counter));
-            }
-
-            public void onFinish() {
-                clockTextView.setText("Stop");
-                stopTimer();
-            }
-        }.start();
-    }
-
-    private void stopTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        timerRunning = false;
-        timerPaused = false;
-        counter = 0;
-        clockTextView.setText(String.valueOf(counter));
-    }
-
-    private void resetTimer() {
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-        timerRunning = false;
-        timerPaused = false;
-        counter = 0;
-        clockTextView.setText(String.valueOf(counter));
     }
 
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            Intent intent = new Intent(this, HomeActivity.class);
-            startActivity(intent);
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-*/
-    public double CalculateRelativeAngle(double imu1, double imu2){
-        return (imu1-imu2);
+    protected void onPostResume() {
+        super.onPostResume();
+        stopAcq = false;
+        UpdateRealTimeData();
     }
 
     private void UpdateRealTimeData(){
@@ -249,12 +166,10 @@ public class DeadliftsActivity extends AppCompatActivity {
 
                 deadliftNotification(imu, flex);
 
-                angle1x_text.setText(String.valueOf(imu.getAngle1_x()));
-                angle1y_text.setText(String.valueOf(imu.getAngle1_y()));
-                angle2x_text.setText(String.valueOf(imu.getAngle2_x()));
-                angle2y_text.setText(String.valueOf(imu.getAngle2_y()));
                 flex_text.setText(String.valueOf(flex.getFlex()));
                 relativeAngleX_text.setText(String.valueOf(imu.getRelative_x()));
+                updateWarning(imu.getRelative_x(),flex.getFlex());
+
                 boolean isDatabaseEmpty = db.isDatabaseEmpty();
                 if (isDatabaseEmpty) {
                     // Database is empty
@@ -309,7 +224,7 @@ public class DeadliftsActivity extends AppCompatActivity {
         }
     }
 
-    @Override
+/*    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.clock_bar, menu);
@@ -328,10 +243,77 @@ public class DeadliftsActivity extends AppCompatActivity {
             return true;
         }
         return(super.onOptionsItemSelected(item));
+    }*/
+
+    private void stopAcqn(){
+        if (!stopAcq) {
+            flagDatabase.child("stopRead").setValue(true);
+            chartButton.setVisibility(View.VISIBLE);
+            int id = sharedPreferences.getInt("id", -1);
+            if(id != -1) {
+                editor.putInt("id_chart", id);
+                id++; //increment id for next acq
+                editor.putInt("id", id);
+                editor.apply();
+            } else {
+                Log.w(Lobster, "Failed to increment id value.");
+            }
+        }
+    }
+
+    private void updateWarning (double imu, double flex){
+        if (imu > 110) {
+            imuWarning.setText("Warning: Squat is much too deep");
+        }
+        else if (imu > 100) {
+            imuWarning.setText("Caution: Squat is deep");
+        }
+        else if (imu > 80) {
+            imuWarning.setText("Great Squat");
+        }
+        else if (imu > 70){
+            imuWarning.setText("Try going into a deeper squat");
+        }
+        else {
+            imuWarning.setText("");
+        }
+        if (flex > 15){
+            flexWarning.setText("Back is bent. Adjust form");
+        } else if(flex > 5) {
+            flexWarning.setText("Back is slightly bent");
+        }
+        else {
+            flexWarning.setText("Excellent");
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.clock_bar, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (item.getItemId() == android.R.id.home) {
+            // Home button clicked
+            if (!stopAcq){
+                stopAcqn();
+            }
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if (id == R.id.menu_clock_activity) {
+            Log.d(Lobster, "Go to Clock Dialog Fragment");
+            FragmentManager fm = getSupportFragmentManager();
+            ClockFragment hp = new ClockFragment();
+            hp.show(fm, "clock_fragment");
+            return true;
+        }
+        return(super.onOptionsItemSelected(item));
     }
 }
-
-//Log.d(Lobster, "Go to Help");
-//            FragmentManager fm = getSupportFragmentManager();
-//            HelpFragmentDeadlifts hp = new HelpFragmentDeadlifts();
-//            hp.show(fm, "fragment_help_deadlift");

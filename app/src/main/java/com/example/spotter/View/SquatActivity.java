@@ -184,7 +184,7 @@ public class SquatActivity extends AppCompatActivity {
         UpdateRealTimeData();
     }
 
-    private void startTimer() {
+    /*private void startTimer() {
         timerRunning = true;
         countDownTimer = new CountDownTimer(30000, 1000) {
             public void onTick(long millisUntilFinished) {
@@ -240,7 +240,7 @@ public class SquatActivity extends AppCompatActivity {
         timerPaused = false;
         counter = 0;
         clockTextView.setText(String.valueOf(counter));
-    }
+    }*/
 
 
     private void UpdateRealTimeData() {

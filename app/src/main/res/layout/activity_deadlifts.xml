@@ -14,112 +14,6 @@
         android:gravity="center"
         android:text="Live Readings for Deadlifts"/>
 
-
-    <!-- First Row -->
-    <LinearLayout
-        android:layout_marginTop="100dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text=" "
-            android:textSize="20dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="IMU1 (deg)"
-            android:textSize="20dp" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="IMU2 (deg)"
-            android:textSize="20dp" />
-    </LinearLayout>
-
-    <!-- Second Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="X-axis Angle"
-            android:textSize="20dp" />
-
-        <TextView
-            android:id="@+id/deadlift_a1x"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="0.00"
-            android:maxLength="6"
-            android:textSize="25dp" />
-
-        <TextView
-            android:id="@+id/deadlift_a2x"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="0.00"
-            android:maxLength="6"
-            android:textSize="25dp" />
-    </LinearLayout>
-
-    <!-- Third Row -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="Y-axis Angle"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/deadlift_a1y"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="0.00"
-            android:maxLength="6"
-            android:textSize="25dp" />
-
-        <TextView
-            android:id="@+id/deadlift_a2y"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="0.00"
-            android:maxLength="6"
-            android:textSize="25dp" />
-    </LinearLayout>
-
     <!-- Fourth Row -->
     <LinearLayout
 
@@ -158,6 +52,27 @@
 
     </LinearLayout>
 
+    <!-- Third Row -->
+    <LinearLayout
+
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/imuWarning_deadlift"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textSize="20dp" />
+
+
+    </LinearLayout>
+
 
     <TextView
         android:layout_width="match_parent"
@@ -179,6 +94,27 @@
         android:text="0.00"
         android:maxLength="6"
         />
+
+    <!-- Third Row -->
+    <LinearLayout
+
+        android:layout_marginTop="30dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/flexWarning_deadlift"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text=""
+            android:textSize="20dp" />
+
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_marginTop="20dp"

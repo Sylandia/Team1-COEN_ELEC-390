@@ -138,7 +138,7 @@
             android:layout_weight="1"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:text="             Above 100&#xb0;"
+            android:text="       Above 100&#xb0;"
             android:textSize="18dp" />
 
         <TextView

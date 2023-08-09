@@ -4,6 +4,7 @@ import static android.app.PendingIntent.getActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.app.Activity;
 import android.content.Context;
@@ -34,7 +35,7 @@ import java.util.Map;
 public class ChartMain extends AppCompatActivity {
     EditText delay;
     TextView countDown;
-    Button startBtn, calibBtn;
+    Button startBtn, calibBtn, helpButton;
 
     static final String Lobster = "Lobster_ChartMain";
     DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
@@ -54,6 +55,16 @@ public class ChartMain extends AppCompatActivity {
     private ValueEventListener calibValueEventListener;
     private ValueEventListener startValueEventListener;
 
+    private View.OnClickListener helpActivity = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Log.d(Lobster, "Go to Help");
+            FragmentManager fm = getSupportFragmentManager();
+            HelpFragmentSquats hp = new HelpFragmentSquats();
+            hp.show(fm, "fragment_help_squat");
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +74,9 @@ public class ChartMain extends AppCompatActivity {
         delay = findViewById(R.id.delayText);
         calibBtn = findViewById(R.id.calibrateBtn);
         countDown = findViewById(R.id.countdownTxt);
+        helpButton = findViewById(R.id.helpButton);
+
+        helpButton.setOnClickListener(helpActivity);
     }
 
     @Override

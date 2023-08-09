@@ -103,6 +103,7 @@ public class ImuSensor {
         {
             relative = angle2 - angle1;
         }
+        if (relative > 300) relative = 360 - relative;
        return relative;
     }
 

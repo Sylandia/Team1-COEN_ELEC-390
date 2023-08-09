@@ -205,6 +205,7 @@
 
     </LinearLayout>
 
+    <!--
     <Button
         android:layout_gravity="center"
         android:id="@+id/helpButton"
@@ -212,4 +213,5 @@
         android:layout_height="57dp"
         android:text="Help"
         android:layout_marginTop="10dp" />
+        -->
 </LinearLayout>

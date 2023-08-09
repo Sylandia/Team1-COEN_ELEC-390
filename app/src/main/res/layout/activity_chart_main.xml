@@ -69,4 +69,12 @@
         android:textSize="20dp">
     </TextView>
 
+    <Button
+        android:id="@+id/helpButton"
+        android:layout_width="118dp"
+        android:layout_height="57dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="Help" />
+
 </LinearLayout>

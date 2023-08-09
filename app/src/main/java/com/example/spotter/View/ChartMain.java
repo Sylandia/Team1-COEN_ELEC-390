@@ -4,9 +4,11 @@ import static android.app.PendingIntent.getActivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -55,6 +57,7 @@ public class ChartMain extends AppCompatActivity {
     private static final int CALIBRATION_TIMEOUT = 15000; // 15 seconds in milliseconds
     private ValueEventListener calibValueEventListener;
     private ValueEventListener startValueEventListener;
+    private NotificationManagerCompat notificationManager;
 
     private View.OnClickListener helpActivity = new View.OnClickListener() {
         @Override
@@ -81,6 +84,9 @@ public class ChartMain extends AppCompatActivity {
 
         getSupportActionBar().setTitle("Acquisition");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //Notification
+        notificationManager =  NotificationManagerCompat.from(this);
     }
 
     @Override
@@ -232,6 +238,8 @@ public class ChartMain extends AppCompatActivity {
 
     // Function to start polling the database for changes in calib value
     private void startPollingCalibValue() {
+
+        notificationManager.cancelAll();
         calibRef.addValueEventListener(calibValueEventListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -242,6 +250,7 @@ public class ChartMain extends AppCompatActivity {
                     startBtn.setVisibility(View.VISIBLE);
                     calibBtn.setVisibility(View.INVISIBLE);
                     delay.setVisibility(View.VISIBLE);
+
                 } else {
                     // Calibration failed after 15 seconds
                     handler.postDelayed(new Runnable() {

@@ -1,7 +1,8 @@
 package com.example.spotter.View;
 
-import static com.example.spotter.Controller.NotificationHelper.DEADLIFT;
-import static com.example.spotter.Controller.NotificationHelper.SQUAT;
+import static com.example.spotter.Controller.NotificationHelper.BACK;
+import static com.example.spotter.Controller.NotificationHelper.KNEE;
+
 
 import android.Manifest;
 import android.app.Notification;
@@ -253,7 +254,8 @@ public class SquatActivity extends AppCompatActivity {
                 FlexSensor flex = new FlexSensor(value.get("Flex"));
                 ImuSensor imu = new ImuSensor(value.get("Angle1x"), value.get("Angle1y"), value.get("Angle2x"), value.get("Angle2y"));
 
-                squatNotification(imu, flex);
+                squatBackNotification(flex);
+                squatKneeNotification(imu);
 
                 flex_text.setText(String.valueOf(flex.getFlex()));
                 relativeAngleX_text.setText(String.valueOf(imu.getRelative_x()));
@@ -286,29 +288,63 @@ public class SquatActivity extends AppCompatActivity {
             }
         });
     }
-    public void squatNotification(ImuSensor i, FlexSensor f) { // have to have notifications enabled
+    public void squatBackNotification(FlexSensor f) { // have to have notifications enabled
 
-        if (f.getFlex() >= -10 ) { // below -10 Excellent; between -10 and -5 back is slightly bent
-            if(f.getFlex() > -5){ // above -5 means back is over bent
+        if (f.getFlex() >= 5 ) { // below 5 Excellent; between 5 and 15 back is slightly bent
+            if(f.getFlex() > 15 ){ // above 15 means back is over bent
 
-                Notification notification = new NotificationCompat.Builder(this , SQUAT)
+                Notification notification = new NotificationCompat.Builder(this , BACK)
                         .setSmallIcon(R.drawable.error_notification)
                         .setContentTitle("Squat Error")
                         .setContentText("Back is over bending! Fix form.")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setOnlyAlertOnce(true)
+                        .setAutoCancel(true)
                         .build();
-                notificationManager.notify(1, notification);
+                notificationManager.notify(0, notification);
             }else {
-                Notification notification = new NotificationCompat.Builder(this, SQUAT)
+                Notification notification = new NotificationCompat.Builder(this, BACK)
                         .setSmallIcon(R.drawable.warning_notification)
                         .setContentTitle("Squat Error")
                         .setContentText("Back is starting to bend.")
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setOnlyAlertOnce(true)
+                        .setAutoCancel(true)
+                        .build();
+                notificationManager.notify(0, notification);
+                //Log.e(Lobster, "Notification Created");
+            }
+        }else{
+            //do nothing
+        }
+    }
+    public void squatKneeNotification(ImuSensor i) { // have to have notifications enabled
+
+        if (i.getRelative_x() >= 100) { // Between 80 and 100 Good; between 100 and 110 caution on depth
+            if (i.getRelative_x() > 110) { // above 110 is a warning for too deep
+
+                Notification notification = new NotificationCompat.Builder(this, KNEE)
+                        .setSmallIcon(R.drawable.error_notification)
+                        .setContentTitle("Squat Warning")
+                        .setContentText("Squat is much too deep")
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setOnlyAlertOnce(true)
+                        .setAutoCancel(true)
+                        .build();
+                notificationManager.notify(1, notification);
+            } else {
+                Notification notification = new NotificationCompat.Builder(this, KNEE)
+                        .setSmallIcon(R.drawable.warning_notification)
+                        .setContentTitle("Squat Caution")
+                        .setContentText("Squat is deep.")
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setOnlyAlertOnce(true)
+                        .setAutoCancel(true)
                         .build();
                 notificationManager.notify(1, notification);
                 //Log.e(Lobster, "Notification Created");
             }
-        }else{
+        } else {
             //do nothing
         }
     }

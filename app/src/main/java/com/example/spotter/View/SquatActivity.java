@@ -61,7 +61,7 @@ public class SquatActivity extends AppCompatActivity {
 
     private TextView flex_text, relativeAngleX_text, flexWarning, imuWarning;
     private TextView clockTextView;
-    private Button chartButton, helpButton, startClockButton, resetClockButton, stopAcqBtn;
+    private Button chartButton, startClockButton, resetClockButton, stopAcqBtn;
     private DataBaseHelper db;
     private NotificationManagerCompat notificationManager;
     Context context = this;
@@ -93,7 +93,6 @@ public class SquatActivity extends AppCompatActivity {
         flex_text = findViewById(R.id.squat_flex);
         relativeAngleX_text = findViewById(R.id.squat_ra1);
         chartButton = findViewById(R.id.chartButton);
-        helpButton = findViewById(R.id.helpButton);
         stopAcqBtn = findViewById(R.id.stopAcqBtn);
         chartButton.setVisibility(View.INVISIBLE);
 
@@ -136,9 +135,6 @@ public class SquatActivity extends AppCompatActivity {
                 resetTimer();
             }
         });*/
-
-
-        helpButton.setOnClickListener(helpActivity);
 
         getSupportActionBar().setTitle("Squats");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

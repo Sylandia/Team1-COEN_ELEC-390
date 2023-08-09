@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -77,6 +78,9 @@ public class ChartMain extends AppCompatActivity {
         helpButton = findViewById(R.id.helpButton);
 
         helpButton.setOnClickListener(helpActivity);
+
+        getSupportActionBar().setTitle("Acquisition");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override
@@ -280,6 +284,20 @@ public class ChartMain extends AppCompatActivity {
         super.onPause();
         flagDatabase.child("startRead").setValue(true);
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (item.getItemId() == android.R.id.home) {
+            // Home button clicked
+            stopTransfer = true;
+            flagDatabase.child("stopRead").setValue(stopTransfer);
+            Intent intent = new Intent(this, HomeActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        return false;
     }
 
 

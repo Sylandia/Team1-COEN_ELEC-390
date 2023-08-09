@@ -56,8 +56,8 @@ public class DeadliftsActivity extends AppCompatActivity {
     private DataBaseHelper db;
     private NotificationManagerCompat notificationManager;
     Context context = this;
-    SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-    SharedPreferences.Editor editor = sharedPreferences.edit();
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
 
     DatabaseReference sensorDatabase = FirebaseDatabase.getInstance().getReference("Sensor"); // choose the correct pathing
     DatabaseReference flagDatabase = FirebaseDatabase.getInstance().getReference("Flags"); //path for flag
@@ -89,6 +89,9 @@ public class DeadliftsActivity extends AppCompatActivity {
         //Warnings
         imuWarning = findViewById(R.id.imuWarning_deadlift);
         flexWarning = findViewById(R.id.flexWarning_deadlift);
+
+       sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+       editor = sharedPreferences.edit();
 
         //startClockButton = findViewById(R.id.startClockButton);
         //resetClockButton = findViewById(R.id.resetClockButton);

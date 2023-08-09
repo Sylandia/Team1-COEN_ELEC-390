@@ -237,7 +237,7 @@ public class SquatActivity extends AppCompatActivity {
     }
     public void squatNotification(ImuSensor i, FlexSensor f) { // have to have notifications enabled
 
-        if (f.getFlex() > 7.99) {
+        if (f.getFlex() > 10) {
             Notification notification = new NotificationCompat.Builder(this , SQUAT)
                     .setSmallIcon(R.drawable.error_notification)
                     .setContentTitle("Squat Error")
@@ -280,9 +280,9 @@ public class SquatActivity extends AppCompatActivity {
         else {
             imuWarning.setText("");
         }
-        if (flex > -5){
+        if (flex > 15){
             flexWarning.setText("Back is bent. Adjust form");
-        } else if(flex > -10) {
+        } else if(flex > 5) {
             flexWarning.setText("Back is slightly bent");
         }
         else {

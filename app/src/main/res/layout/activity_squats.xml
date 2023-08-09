@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Relative Angle between sensors along X-axis (deg)"
+            android:text="Knee Angle (deg)"
             android:textSize="20dp" />
 
 
@@ -83,7 +83,7 @@
         android:gravity="center"
         android:layout_marginTop="50dp"
         android:textSize="20dp"
-        android:text="Flex Sensor (deg)"
+        android:text="Back Angle (deg)"
         />
 
 

@@ -99,6 +99,12 @@ public class LineChartView extends AppCompatActivity {
             }
             return true;
         }
+        else if (id == R.id.menu_info_chart_activity) {
+            FragmentManager fm = getSupportFragmentManager();
+            InfoChartFragment hp = new InfoChartFragment();
+            hp.show(fm, "fragment_info_chart");
+            return true;
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -267,16 +273,5 @@ public class LineChartView extends AppCompatActivity {
     }
     */
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.menu_info_chart_activity) {
-            FragmentManager fm = getSupportFragmentManager();
-            InfoChartFragment hp = new InfoChartFragment();
-            hp.show(fm, "fragment_info_chart");
-            return true;
-        }
-        return(super.onOptionsItemSelected(item));
-    }
 }
 

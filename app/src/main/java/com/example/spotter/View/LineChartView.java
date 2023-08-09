@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -25,11 +25,12 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
-import com.google.firebase.auth.FirebaseAuth;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.github.mikephil.charting.utils.MPPointF;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -38,7 +39,7 @@ public class LineChartView extends AppCompatActivity {
     private LineChart lineChart;
     private List<String> xValues;
     private DataBaseHelper db;
-    boolean orientation = false;
+    boolean orientationPortrait ;
 
     Context context;
 
@@ -76,6 +77,27 @@ public class LineChartView extends AppCompatActivity {
             }
         }
 
+        lineChart = findViewById(R.id.LineChart_view);
+
+        lineChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+            @Override
+            public void onValueSelected(Entry e, Highlight h) {
+                float x = (float) (e.getX()*0.1);
+                float y = e.getY();
+
+                // Show a toast with the coordinates at the adjusted position
+                Toast toast = Toast.makeText(LineChartView.this, "Time: " + x + ", Angle: " + y, Toast.LENGTH_SHORT);
+                toast.show();
+
+            }
+
+            @Override
+            public void onNothingSelected() {
+
+            }
+        });
+
+
         //For testing
         /*db = new DataBaseHelper(LineChartView.this);
         Vector<Double> relativeXValues = db.getIMU_Relative_Angle(9, "Squats");
@@ -89,24 +111,22 @@ public class LineChartView extends AppCompatActivity {
             // Home button clicked
             Intent intent = new Intent(this, HomeActivity.class);
             startActivity(intent);
-            return true;
         } else if(id == R.id.menu_change) {
-            if (!orientation){
+            if (!orientationPortrait){
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                orientation = false;
             } else {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
-            return true;
+            orientationPortrait = !orientationPortrait;
         }
         else if (id == R.id.menu_info_chart_activity) {
             FragmentManager fm = getSupportFragmentManager();
             InfoChartFragment hp = new InfoChartFragment();
             hp.show(fm, "fragment_info_chart");
-            return true;
         }
         return super.onOptionsItemSelected(item);
     }
+
 
     private void displayDummyChart() {
         //Dummy Chart
@@ -195,7 +215,9 @@ public class LineChartView extends AppCompatActivity {
 
         xValues = new ArrayList<>();
         for (int i = 0; i < rel_x.size(); i++) {
-            xValues.add(Integer.toString(i + 1));
+            double value = i*0.1;
+            String formattedValue = String.format("%.1f", value); // Limit to 1 decimal place
+            xValues.add(formattedValue);
         }
 
         List <Entry> entries1 = new ArrayList<>();
@@ -235,8 +257,9 @@ public class LineChartView extends AppCompatActivity {
         yAxis.setLabelCount(10);
         yAxis.setTextColor(Color.WHITE);
 
-        Legend legend = lineChart.getLegend();
-        legend.setTextColor(Color.WHITE);
+        //Legend legend = lineChart.getLegend();
+        lineChart.getLegend().setEnabled(false);
+        //legend.setTextColor(Color.WHITE);
 
         LineDataSet lineDataSet1 = new LineDataSet(entries1, "IMU Values");
         lineDataSet1.setColor(Color.BLUE);
@@ -247,14 +270,15 @@ public class LineChartView extends AppCompatActivity {
         lineDataSet2.setDrawValues(false);
 
         LineDataSet lineDataSet3 = new LineDataSet(entries2, "range end");
-        lineDataSet2.setColor(Color.RED);
-        lineDataSet2.setDrawValues(false);
+        lineDataSet3.setColor(Color.RED);
+        lineDataSet3.setDrawValues(false);
 
         LineData lineData = new LineData(lineDataSet1);
         lineChart.setData(lineData);
         lineData.setValueTextColor(Color.WHITE);
 
         lineChart.invalidate();
+
     }
 
     @Override
@@ -263,6 +287,8 @@ public class LineChartView extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.info_bar, menu);
         return true;
     }
+
+
 
     /*
     @Override

@@ -21,13 +21,23 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="D\nE\nG\n(&#xb0;)"
+                android:text="D\ne\ng\n(&#xb0;)"
                 android:textSize="20dp"></TextView>
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/LineChart_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                android:paddingRight="15dp"
+                android:layout_weight="9"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="T\nI\nM\nE\n(s)"
+                android:layout_gravity="bottom"
+
+                android:textSize="20dp"></TextView>
 
         </LinearLayout>
 

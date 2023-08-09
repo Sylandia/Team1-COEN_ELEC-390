@@ -343,6 +343,9 @@ public class SquatActivity extends AppCompatActivity {
         else if (imu > 80) {
             imuWarning.setText("Great Squat");
         }
+        else if (imu > 70){
+            imuWarning.setText("Try going into a deeper squat");
+        }
         else {
             imuWarning.setText("");
         }

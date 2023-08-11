@@ -211,6 +211,8 @@ public class DeadliftsActivity extends AppCompatActivity {
                         .setContentTitle("Deadlift Error")
                         .setContentText("Back is over bending! Fix form.")
                         .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setOnlyAlertOnce(true)
+                        .setAutoCancel(true)
                         .build();
                 notificationManager.notify(2, notification);
             }else {
@@ -219,6 +221,8 @@ public class DeadliftsActivity extends AppCompatActivity {
                         .setContentTitle("Deadlift Error")
                         .setContentText("Back is starting to bend.")
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setOnlyAlertOnce(true)
+                        .setAutoCancel(true)
                         .build();
                 notificationManager.notify(2, notification);
                 //Log.e(Lobster, "Notification Created");
@@ -297,16 +301,16 @@ public class DeadliftsActivity extends AppCompatActivity {
 
     private void updateWarning (double imu, double flex){
         if (imu > 110) {
-            imuWarning.setText("Warning: Squat is much too deep");
+            imuWarning.setText("Warning: Deadlift is much too deep");
         }
         else if (imu > 100) {
-            imuWarning.setText("Caution: Squat is deep");
+            imuWarning.setText("Caution: Deadlift is deep");
         }
         else if (imu > 80) {
-            imuWarning.setText("Great Squat");
+            imuWarning.setText("Great Deadlift");
         }
         else if (imu > 70){
-            imuWarning.setText("Try going into a deeper squat");
+            imuWarning.setText("Try going into a deeper Deadlift");
         }
         else {
             imuWarning.setText("");
